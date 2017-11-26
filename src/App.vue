@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    hello world
     <router-view/>
   </div>
 </template>
@@ -14,6 +13,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "common/stylus/variable"
   #app {
+    height: 100%;
     color: $color-theme;
   }
 </style>
