@@ -1,12 +1,21 @@
 <template>
   <div id="app">
+    <m-header />
+    <tab />
     <router-view/>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import Header from 'components/m-header/m-header'
+  import Tab from 'components/tab/tab'
+
   export default {
-    name: 'app'
+    name: 'app',
+    components: {
+      'm-header': Header,
+      'tab': Tab
+    }
   }
 </script>
 

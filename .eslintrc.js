@@ -25,5 +25,6 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'eol-last': 0, // 文件末尾是空行
     'space-before-function-paren': 0, // 函数左括号前有空格
+    'comma-dangle': 0, // 拖尾逗号
   }
 }
