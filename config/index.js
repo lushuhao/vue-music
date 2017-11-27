@@ -10,7 +10,15 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: { // 反向代理
+      '/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg': {
+        target: 'https://c.y.qq.com',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg': '/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg'
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
