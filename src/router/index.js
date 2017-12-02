@@ -6,6 +6,7 @@ Vue.use(Router)
 const Recommend = () => import(/* webpackChunkName: "group-recommend" */ 'components/recommend/recommend')
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',

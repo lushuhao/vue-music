@@ -11,13 +11,10 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: { // 反向代理
-      '/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg': {
-        target: 'https://c.y.qq.com',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg': '/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg'
-        }
-      }
+      // '/musichall': {
+      //   target: 'https://c.y.qq.com',
+      //   changeOrigin: true,
+      // }
     },
 
     // Various Dev Server settings
