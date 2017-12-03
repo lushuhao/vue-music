@@ -1,12 +1,10 @@
 <template>
   <div class="slider" ref="slider">
     <div class="slider-group" ref="sliderGroup">
-      <slot>
-
-      </slot>
+      <slot></slot>
     </div>
     <div class="dots">
-
+      <span v-for="(item, index) in dots" class="dot" :class="{active: index === currentPage}"></span>
     </div>
   </div>
 </template>
@@ -16,6 +14,7 @@
   import {addClass} from 'common/js/dom'
 
   export default {
+    name: 'slider',
     props: {
       loop: {
         type: Boolean,
@@ -32,13 +31,20 @@
     },
     data() {
       return {
-        children: ''
+        children: '', // 父组件插入的VNode
+        slider: '', // better-scroll生成的对象
+        dots: [],
+        currentPage: 0,
+        timer: '' // 定时器编号
       }
     },
     mounted() { // better-scroll需要在DOM构建完成初始化
       setTimeout(() => {
         this._setSliderWidth()
+        this._initDots()
         this._initSlider()
+
+        this.autoPlay && this._play()
       }, 20) // 浏览器刷新是60FPS, 1000/60 = 17ms, 才会进行下一次渲染
     },
     methods: {
@@ -53,12 +59,15 @@
 
           child.style.width = sliderWidth + 'px'
           width += sliderWidth
-
-          if (this.loop) {
-            width += 2 * sliderWidth // 左右各生成一个img, 宽度需要加2个
-          }
-          this.$refs.sliderGroup.style.width = width + 'px '
         }
+        if (this.loop) {
+          width += 2 * sliderWidth // 左右各生成一个img, 宽度需要加2个
+        }
+        this.$refs.sliderGroup.style.width = width + 'px '
+      },
+      _initDots() {
+        // 生成一个空数组，长度和this.children一致，要注意better-scroll前后各复制一份
+        this.dots = new Array(this.children.length)
       },
       _initSlider() {
         this.slider = new BScroll(this.$refs.slider, { // BScroll(el, options)
@@ -71,6 +80,24 @@
           },
           click: true  // 默认会阻止浏览器的原生 click 事件
         })
+
+        this.slider.on('scrollEnd', () => {
+          let pageIndex = this.slider.getCurrentPage().pageX // 滚动结束，获取当前页面横轴方向的页面数
+          this.loop && pageIndex--      // 循环滚动需要减去BScroll增加的一个dom
+          this.currentPage = pageIndex
+
+          if (this.autoPlay) {
+            clearTimeout(this.timer)
+            this._play()
+          }
+        })
+      },
+      _play() {
+        let pageIndex = this.currentPage + 1  // goToPage从1开始计数，需要加1
+        this.loop && pageIndex++              // 循环播放跳转下一页
+        this.timer = setTimeout(() => {       // 返回定时器编号
+          this.slider.goToPage(pageIndex, 0, 400)
+        }, this.interval)
       }
     }
   }
@@ -101,6 +128,29 @@
         img {
           display: block
           width: 100%
+        }
+      }
+    }
+
+    .dots {
+      position: absolute;
+      left: 0
+      right: 0
+      bottom: 12px
+      text-align: center
+
+      .dot {
+        display: inline-block
+        width: 8px
+        height: 8px
+        margin: 0 4px
+        border-radius: 50%
+        background-color: $color-text-l
+
+        &.active {
+          width: 20px
+          border-radius: 4px
+          background-color: $color-text-ll
         }
       }
     }

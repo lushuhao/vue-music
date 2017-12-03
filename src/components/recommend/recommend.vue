@@ -1,6 +1,6 @@
 <template>
   <div class="recommend">
-    <div v-if="slider.length" class="silder-wrapper">
+    <div v-if="slider.length" class="slider-wrapper">
       <slider>
         <a v-for="item in slider" :key="item.id" :href="item.linkUrl">
           <img :src="item.picUrl"/>
