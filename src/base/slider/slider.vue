@@ -46,9 +46,16 @@
 
         this.autoPlay && this._play()
       }, 20) // 浏览器刷新是60FPS, 1000/60 = 17ms, 才会进行下一次渲染
+
+      window.addEventListener('resize', () => {
+        if (!this.slider) {
+          return
+        }
+        this._setSliderWidth(true)
+      })
     },
     methods: {
-      _setSliderWidth() {
+      _setSliderWidth(isResize) {
         this.children = this.$refs.sliderGroup.children // children 获取 VNode 子节点的数组
 
         let width = 0
@@ -60,8 +67,8 @@
           child.style.width = sliderWidth + 'px'
           width += sliderWidth
         }
-        if (this.loop) {
-          width += 2 * sliderWidth // 左右各生成一个img, 宽度需要加2个
+        if (this.loop && !isResize) {
+          width += 2 * sliderWidth // 左右各生成一个img, 宽度需要加2个，注意只需要加一次，后续不能再加宽度
         }
         this.$refs.sliderGroup.style.width = width + 'px '
       },
@@ -77,8 +84,7 @@
             loop: this.loop,
             threshold: 0.3, // 拖动到30%时，展示下一个
             speed: 400
-          },
-          click: true  // 默认会阻止浏览器的原生 click 事件
+          }
         })
 
         this.slider.on('scrollEnd', () => {
