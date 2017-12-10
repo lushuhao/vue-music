@@ -54,6 +54,15 @@
         this._setSliderWidth(true)
       })
     },
+    activated() {
+      this.autoPlay && this._play()
+    },
+    deactivated() { // 切换路由清除定时器
+      clearTimeout(this.timer)
+    },
+    destroyed() { // 销毁组件清除定时器
+      clearTimeout(this.timer)
+    },
     methods: {
       _setSliderWidth(isResize) {
         this.children = this.$refs.sliderGroup.children // children 获取 VNode 子节点的数组
