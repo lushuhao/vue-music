@@ -22,7 +22,8 @@
   export default {
     data() {
       return {
-        slider: []
+        slider: [],   // 轮播图列表
+        discList: []  // 歌单列表
       }
     },
     created() {
@@ -39,7 +40,9 @@
       },
       _getDiscList() {
         getDiscList().then(res => {
-          console.log(res)
+          if (res.code === ERR_OK) {
+            this.discList = res.data.list
+          }
         })
       }
     },

@@ -12,7 +12,6 @@ export async function getDiscList() {
   const url = 'http://proxy.lushuhao.club/music/getdisclist'
 
   const data = Object.assign({}, commonParams, {
-    g_tk: 1724489420,
     rnd: Math.random(),
     hostUin: 0,
     platform: 'yqq',
