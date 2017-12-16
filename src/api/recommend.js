@@ -19,7 +19,8 @@ export async function getDiscList() {
     categoryId: 10000000,
     sortId: 5,
     sin: 0,
-    ein: 29
+    ein: 29,
+    format: 'json'
   })
 
   let res = await axios.get(url, {
