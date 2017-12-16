@@ -4,16 +4,18 @@
       <div>
         <div v-if="slider.length" class="slider-wrapper">
           <slider>
-            <a v-for="item in slider" :key="item.id" :href="item.linkUrl">
-              <img @load="loadImage" :src="item.picUrl"/>
-            </a>
+            <div v-for="item in slider" :key="item.id">
+              <a :href="item.linkUrl">
+                <img @load="loadImage" :src="item.picUrl"/>
+              </a>
+            </div>
           </slider>
         </div>
         <div class="recommend-list">
           <h1 class="list-title">热门歌单推荐</h1>
           <ul>
             <li v-for="item in discList" class="item">
-              <div class="icon"><img width="60" height="60" :src="item.imgurl" :alt="item.dissname"></div>
+              <div class="icon"><img width="60" height="60" v-lazy="item.imgurl" :alt="item.dissname"></div>
               <div class="text">
                 <h2 class="name" v-html="item.creator.name"></h2>
                 <p class="desc" v-html="item.dissname"></p>
