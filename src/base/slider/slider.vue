@@ -43,8 +43,6 @@
         this._setSliderWidth()
         this._initDots()
         this._initSlider()
-
-        this.autoPlay && this._play()
       }) // 浏览器刷新是60FPS, 1000/60 = 17ms, 才会进行下一次渲染
 
       window.addEventListener('resize', () => {
@@ -87,16 +85,17 @@
           scrollX: true,
           momentum: false, // 惯性
           snap: { // 配合slide
-            loop: this.loop,
+            loop: true,
             threshold: 0.3, // 拖动到30%时，展示下一个
             speed: 400
           }
         })
 
+        this.autoPlay && this._play()
+
         this.slider.on('scrollEnd', () => {
-          let pageIndex = this.slider.getCurrentPage().pageX // 滚动结束，获取当前页面横轴方向的页面数
-          this.loop && pageIndex--      // 循环滚动需要减去BScroll增加的一个dom
-          this.currentPage = pageIndex
+           // 滚动结束，获取当前页面横轴方向的页面数
+          this.currentPage = this.slider.getCurrentPage().pageX
 
           if (this.autoPlay) {
             clearTimeout(this.timer)
@@ -105,10 +104,8 @@
         })
       },
       _play() {
-        let pageIndex = this.currentPage + 1  // goToPage从1开始计数，需要加1
-        this.loop && pageIndex++              // 循环播放跳转下一页
-        this.timer = setTimeout(() => {       // 返回定时器编号
-          this.slider.goToPage(pageIndex, 0, 400)
+        this.timer = setTimeout(() => { // 返回定时器编号
+          this.slider.next() // 跳转到下一个页面
         }, this.interval)
       }
     }
