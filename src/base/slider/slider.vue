@@ -39,19 +39,16 @@
       }
     },
     mounted() { // better-scroll需要在DOM构建完成初始化
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         this._setSliderWidth()
         this._initDots()
         this._initSlider()
 
         this.autoPlay && this._play()
-      }, 20) // 浏览器刷新是60FPS, 1000/60 = 17ms, 才会进行下一次渲染
+      }) // 浏览器刷新是60FPS, 1000/60 = 17ms, 才会进行下一次渲染
 
       window.addEventListener('resize', () => {
-        if (!this.slider) {
-          return
-        }
-        this._setSliderWidth(true)
+        this.slider && this._setSliderWidth(true)
       })
     },
     activated() {
