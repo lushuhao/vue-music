@@ -1,10 +1,11 @@
 <template>
   <div class="singer">
-
+    <list-view :data="singers"></list-view>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import ListView from 'base/listview/listview'
   import {getSingerList} from 'api/singer'
   import {ERR_OK} from 'api/config'
 
@@ -24,8 +25,7 @@
       _getSingerList() {
         getSingerList().then(res => {
           if (res.code === ERR_OK) {
-            this.singers = res.data.list
-            console.log(this._normalizeSinger(this.singers))
+            this._normalizeSinger(res.data.list)
           }
         })
       },
@@ -66,8 +66,11 @@
           }
         }
         ret.sort((a, b) => a.title.charCodeAt(0) - b.title.charCodeAt(0))
-        console.log([...hot, ...ret])
+        this.singers = [...hot, ...ret]
       }
+    },
+    components: {
+      ListView
     }
   }
 </script>
