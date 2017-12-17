@@ -5,6 +5,8 @@ Vue.use(Router)
 
 const Recommend = () => import(/* webpackChunkName: "group-recommend" */ 'components/recommend/recommend')
 
+const Singer = () => import(/* webpackChunkName: "group-singer" */ 'components/singer/singer')
+
 export default new Router({
   mode: 'history',
   routes: [
@@ -15,6 +17,10 @@ export default new Router({
     {
       path: '/recommend',
       component: Recommend,
+    },
+    {
+      path: '/singer',
+      component: Singer,
     }
   ]
 })
