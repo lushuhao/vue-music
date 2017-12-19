@@ -25,7 +25,7 @@
       _getSingerList() {
         getSingerList().then(res => {
           if (res.code === ERR_OK) {
-            this._normalizeSinger(res.data.list)
+            this.singers = this._normalizeSinger(res.data.list)
           }
         })
       },
@@ -66,7 +66,7 @@
           }
         }
         ret.sort((a, b) => a.title.charCodeAt(0) - b.title.charCodeAt(0))
-        this.singers = [...hot, ...ret]
+        return [...hot, ...ret]
       }
     },
     components: {
@@ -80,7 +80,6 @@
 
   .singer {
     height: calc(100% - 44px - 44px)
-
   }
 
 </style>
