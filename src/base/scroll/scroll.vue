@@ -19,6 +19,10 @@
       },
       data: {
         type: Array
+      },
+      listenScroll: {
+        type: Boolean,
+        default: false
       }
     },
     mounted() {
@@ -42,6 +46,13 @@
           probeType: this.probeType,
           click: this.click
         })
+
+        if (this.listenScroll) {
+          const vue = this // 保存this指向vue
+          this.scroll.on('scroll', pos => {
+            vue.$emit('scroll', pos)
+          })
+        }
       },
       enable() {
         this.scroll && this.scroll.enable()
