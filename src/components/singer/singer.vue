@@ -1,6 +1,9 @@
 <template>
   <div class="singer">
-    <list-view :data="singers"></list-view>
+    <list-view @select="selectSinger" :data="singers"></list-view>
+    <transition name="slide">
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 
@@ -22,6 +25,9 @@
       this._getSingerList()
     },
     methods: {
+      selectSinger(singer) {
+        this.$router.push(`/singer/${singer.id}`)
+      },
       _getSingerList() {
         getSingerList().then(res => {
           if (res.code === ERR_OK) {
@@ -80,6 +86,14 @@
 
   .singer {
     height: calc(100% - 44px - 44px)
+
+    .slide-enter-active, .slide-leave-active{
+      transition: all .3s
+    }
+
+    .slide-enter, .slide-leave-to{
+      transform: translateX(100%)
+    }
   }
 
 </style>

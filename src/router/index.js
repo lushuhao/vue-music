@@ -7,6 +7,8 @@ const Recommend = () => import(/* webpackChunkName: "group-recommend" */ 'compon
 
 const Singer = () => import(/* webpackChunkName: "group-singer" */ 'components/singer/singer')
 
+const SingerDetail = () => import(/* webpackChunkName: "group-singer" */ 'components/singer/singerDetail')
+
 export default new Router({
   mode: 'history',
   routes: [
@@ -21,6 +23,10 @@ export default new Router({
     {
       path: '/singer',
       component: Singer,
+      children: [{
+        path: ':id',
+        component: SingerDetail
+      }]
     }
   ]
 })
