@@ -11,6 +11,7 @@
   import ListView from 'base/listview/listview'
   import {getSingerList} from 'api/singer'
   import {ERR_OK} from 'api/config'
+  import {mapMutations} from 'vuex'
 
   const HOT_TITLE = '热门'
   const HOT_SINGER_LEN = 10
@@ -25,7 +26,11 @@
       this._getSingerList()
     },
     methods: {
+      ...mapMutations({
+        setSinger: 'SET_SINGER'
+      }),
       selectSinger(singer) {
+        this.setSinger(singer)
         this.$router.push(`/singer/${singer.id}`)
       },
       _getSingerList() {
@@ -87,11 +92,11 @@
   .singer {
     height: calc(100% - 44px - 44px)
 
-    .slide-enter-active, .slide-leave-active{
+    .slide-enter-active, .slide-leave-active {
       transition: all .3s
     }
 
-    .slide-enter, .slide-leave-to{
+    .slide-enter, .slide-leave-to {
       transform: translateX(100%)
     }
   }
