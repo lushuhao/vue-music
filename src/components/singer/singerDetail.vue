@@ -6,6 +6,8 @@
 
 <script type="text/ecmascript-6">
   import {mapGetters} from 'vuex'
+  import {getSingerDetail} from 'api/singer'
+  import {ERR_OK} from 'api/config'
 
   export default {
     computed: {
@@ -14,6 +16,17 @@
       ])
     },
     created() {
+      this.singerId = this.$route.params.id
+      this._getSinger()
+    },
+    methods: {
+      _getSinger() {
+        getSingerDetail(this.singerId).then((res) => {
+          if (res.code === ERR_OK) {
+            console.log(res.data)
+          }
+        })
+      }
     }
   }
 </script>
