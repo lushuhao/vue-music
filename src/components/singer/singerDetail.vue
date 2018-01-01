@@ -34,15 +34,12 @@
         })
       },
       _normalizeSongs(list) {
-        let songs = []
-        list.forEach(async item => {
+        return list.map(item => {
           const {musicData} = item
           if (musicData.songid && musicData.albummid) {
-            const song = await createSong(musicData)
-            songs.push(song)
+            return createSong(musicData)
           }
         })
-        return songs
       }
     }
   }

@@ -13,10 +13,8 @@ export default class Song {
   }
 }
 
-export async function createSong(musicData) {
+export function createSong(musicData) {
   const {songid, songmid, songname, singer, albumname, albummid, interval} = musicData
-
-  const songUrl = await getSongUrl(songmid)
 
   return new Song({
     id: songid,
@@ -26,7 +24,6 @@ export async function createSong(musicData) {
     album: albumname,
     duration: interval,
     image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${albummid}.jpg?max_age=2592000`,
-    url: songUrl
   })
 }
 
