@@ -26,5 +26,6 @@ module.exports = {
     'eol-last': 0, // 文件末尾是空行
     'space-before-function-paren': 0, // 函数左括号前有空格
     'comma-dangle': 0, // 拖尾逗号
+    'no-return-await': 0
   }
 }

@@ -9,6 +9,7 @@
 
 <script type="text/ecmascript-6">
   import ListView from 'base/listview/listview'
+  import Singer from 'common/js/singer'
   import {getSingerList} from 'api/singer'
   import {ERR_OK} from 'api/config'
   import {mapMutations} from 'vuex'
@@ -48,11 +49,11 @@
           }
         }
         list.forEach((item, index) => {
-          const singer = {
+          const singer = new Singer({
             id: item.Fsinger_id,
-            name: item.Fsinger_name,
-            avatar: `https://y.gtimg.cn/music/photo_new/T001R300x300M000${item.Fsinger_mid}.jpg?max_age=2592000`
-          }
+            mid: item.Fsinger_mid,
+            name: item.Fsinger_name
+          })
           const key = item.Findex
           if (index < HOT_SINGER_LEN) {
             map.hot.items.push(singer)

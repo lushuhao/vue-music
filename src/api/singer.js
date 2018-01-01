@@ -11,7 +11,6 @@ export function getSingerList() {
     key: 'all_all_all',
     pagesize: 100,
     pagenum: 1,
-    format: 'jsonp',
     notice: 0,
     hostUin: 0,
     platform: 'yqq',
