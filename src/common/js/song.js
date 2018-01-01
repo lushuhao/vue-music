@@ -1,4 +1,4 @@
-import {getSongUrl} from 'api/song'
+// import {getSongUrl} from 'api/song'
 
 export default class Song {
   constructor({id, mid, singer, name, album, duration, image, url}) {
