@@ -37,7 +37,7 @@
           this.$router.push('/singer')
           return
         }
-        getSingerDetail(this.singerId).then((res) => {
+        getSingerDetail(this.singer.id).then((res) => {
           if (res.code === ERR_OK) {
             this.songs = this._normalizeSongs(res.data.list)
           }
