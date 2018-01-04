@@ -1,10 +1,14 @@
 <template>
   <div ref="wrapper">
     <slot></slot>
+    <div class="loading-container" v-show="!data.length">
+      <loading></loading>
+    </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import Loading from 'base/loading/loading'
   import BScroll from 'better-scroll'
 
   export default {
@@ -69,11 +73,21 @@
       scrolltoElement() {
         this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
       }
+    },
+    components: {
+      Loading
     }
   }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
+
+  .loading-container {
+    position: absolute
+    width: 100%
+    top: 50%
+    transform: translateY(-50%)
+  }
 
 </style>

@@ -24,9 +24,6 @@
           </ul>
         </div>
       </div>
-      <div class="loading-container" v-show="!discList.length">
-        <loading />
-      </div>
     </scroll>
   </div>
 </template>
@@ -34,7 +31,6 @@
 <script type="text/ecmascript-6">
   import Scroll from 'base/scroll/scroll'
   import Slider from 'base/slider/slider'
-  import Loading from 'base/loading/loading'
   import {getRecommend, getDiscList} from 'api/recommend'
   import {ERR_OK} from 'api/config'
 
@@ -75,7 +71,6 @@
     components: {
       Slider,
       Scroll,
-      Loading
     },
   }
 </script>
@@ -132,12 +127,6 @@
             color: $color-text-d
           }
         }
-      }
-      .loading-container {
-        position: absolute
-        width: 100%
-        top: 50%
-        transform: translateY(-50%)
       }
     }
   }

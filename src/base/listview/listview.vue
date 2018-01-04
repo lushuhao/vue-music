@@ -27,9 +27,6 @@
     <div class="list-fixed" v-show="fixedTitle" ref="fixed">
       <h1 class="fixed-title">{{fixedTitle}}</h1>
     </div>
-    <div v-show="!data.length" class="loading-container">
-      <loading></loading>
-    </div>
   </scroll>
 </template>
 
@@ -229,12 +226,6 @@
         color: $color-text-l
         background: $color-highlight-background
       }
-    }
-    .loading-container {
-      position: absolute
-      top: 50%
-      width: 100%
-      transform: translateY(-50%)
     }
   }
 </style>
