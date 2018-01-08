@@ -1,13 +1,13 @@
 <template>
   <div class="song-list">
-<ul>
-  <li v-for="song in songs" class="item">
-    <div class="content">
-      <h2 class="name">{{song.name}}</h2>
-      <p class="desc">{{getDesc(song)}}</p>
-    </div>
-  </li>
-</ul>
+    <ul>
+      <li @click="selectItem(song,index)" v-for="(song, index) in songs" class="item">
+        <div class="content">
+          <h2 class="name">{{song.name}}</h2>
+          <p class="desc">{{getDesc(song)}}</p>
+        </div>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -20,6 +20,9 @@
       }
     },
     methods: {
+      selectItem(item, index) {
+        this.$emit('select', item, index)
+      },
       getDesc(song) {
         return `${song.singer} - ${song.album}`
       }
@@ -32,22 +35,22 @@
   @import "~common/stylus/mixin"
 
   .song-list {
-    .item{
+    .item {
       display: flex
       align-items: center
       height: 64px
       font-size: $font-size-medium
 
-      .content{
+      .content {
         flex: 1
-        line-height:20px
+        line-height: 20px
 
-        .name{
+        .name {
           no-wrap()
           color: $color-text
         }
 
-        .desc{
+        .desc {
           no-wrap()
           margin-top: 4px
           color: $color-text-d
