@@ -6,7 +6,7 @@
 
 <script type="text/ecmascript-6">
   import MusicList from 'components/music-list/music-list'
-  import {mapGetters} from 'vuex'
+  import {mapState} from 'vuex'
   import {getSingerDetail} from 'api/singer'
   import {ERR_OK} from 'api/config'
   import {createSong} from 'common/js/song'
@@ -18,7 +18,7 @@
       }
     },
     computed: {
-      ...mapGetters([
+      ...mapState([
         'singer'
       ]),
       title() {
