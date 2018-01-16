@@ -1,6 +1,5 @@
 import {commonParams, options} from './config'
 import jsonp from 'common/js/jsonp'
-import axios from 'axios'
 
 export function getSingerList() {
   const url = 'https://szc.y.qq.com/v8/fcg-bin/v8.fcg'
@@ -20,20 +19,19 @@ export function getSingerList() {
   return jsonp(url, data, options)
 }
 
-export async function getSingerDetail(id, num = 100) {
+export function getSingerDetail(mid, num = 100) {
   const url = 'http://proxy.lushuhao.club/music/getSinger'
 
   const data = Object.assign({}, commonParams, {
-    singerid: id,
-    format: 'json',
-    from: 'h5',
+    g_tk: 336982717,
+    singermid: mid,
+    platform: 'yqq',
+    needNewCode: 0,
     num: num,
-    begin: 0
+    begin: 0,
+    order: 'listen',
+    songstatus: 1
   })
 
-  const res = await axios.get(url, {
-    params: data
-  })
-
-  return res.data
+  return jsonp(url, data, options)
 }
