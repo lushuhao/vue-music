@@ -3,6 +3,8 @@
     <transition name="normal"
                 @enter="enter"
                 @after-enter="afterEnter"
+                @leave="leave"
+                @after-leave="afterLeave"
     >
       <div class="normal-player" v-show="fullScreen">
         <div class="background">
@@ -57,6 +59,9 @@
   import {mapState, mapGetters, mapMutations} from 'vuex'
   import * as types from '../../store/mutation-types.js'
   import animations from 'create-keyframe-animation'
+  import {perfixStyle} from 'common/js/dom'
+
+  const transform = perfixStyle('transform')
 
   export default {
     computed: {
@@ -107,10 +112,15 @@
         this.$refs.cdWrapper.style.animation = '' // 清空animation
       },
       leave(el, done) {
-        console.log('leave')
+        const {x, y, scale} = this._getPosAndScale()
+
+        this.$refs.cdWrapper.style.transition = 'all .4s'
+        this.$refs.cdWrapper.style[transform] = `translate(${x}px, ${y}px) scale(${scale})`
+        this.$refs.cdWrapper.addEventListener('transitionend', done)
       },
       afterLeave(el) {
-        console.log('afterLeave')
+        this.$refs.cdWrapper.style.transition = ''
+        this.$refs.cdWrapper.style[transform] = ''
       },
       _getPosAndScale() {
         const targetWidth = 40 // mini播放器CD的宽度
