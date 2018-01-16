@@ -1,5 +1,4 @@
 import {commonParams} from './config'
-// import jsonp from 'common/js/jsonp'
 import axios from 'axios'
 
 export async function getSongUrl(songmid) {
