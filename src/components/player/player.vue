@@ -52,12 +52,12 @@
         </div>
       </div>
     </transition>
-    <audio ref="audio" :src="currentSongUrl"></audio>
+    <audio ref="audio" :src="currentSong.url"></audio>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import {mapState, mapGetters, mapActions, mapMutations} from 'vuex'
+  import {mapState, mapActions, mapMutations} from 'vuex'
   import * as types from '../../store/mutation-types.js'
   import animations from 'create-keyframe-animation'
   import {perfixStyle} from 'common/js/dom'
@@ -69,17 +69,15 @@
       ...mapState([
         'fullScreen',
         'playList',
-        'currentSongUrl'
-      ]),
-      ...mapGetters(['currentSong'])
+        'currentSong',
+        'playing'
+      ])
     },
     watch: {
-      currentSong(song) {
-        this.setSongUrl(song.mid).then(() => {
-          document.addEventListener('touchstart', () => {
-            this.$refs.audio.play()
-          })
-        })
+      currentSong() {
+        document.addEventListener('touchstart', () => {
+          this.$refs.audio.play()
+        }, {once: true})
       }
     },
     methods: {

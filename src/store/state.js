@@ -8,7 +8,7 @@ const state = {
   sequenceList: [], // 顺序播放列表
   playMode: playMode.sequence, // 播放模式
   currentIndex: -1, // 当前播放索引
-  currentSongUrl: '', // 当前播放歌曲URL
+  currentSong: '', // 当前播放歌曲
 }
 
 export default state
