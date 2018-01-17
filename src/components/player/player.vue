@@ -39,8 +39,10 @@
     </transition>
     <transition name="mini">
       <div class="mini-player" v-show="!fullScreen" @click="open">
-        <div class="icon" :class="cdRotate">
-          <img width="40" height="40" :src="currentSong.image"/>
+        <div class="icon">
+          <div class="imgWrapper" :style="cdStyle">
+            <img ref="miniCdImage" width="40" height="40" :src="currentSong.image" :class="cdRotate"/>
+          </div>
         </div>
         <div class="text">
           <h2 class="name" v-html="currentSong.name"></h2>
@@ -60,7 +62,7 @@
 
 <script type="text/ecmascript-6">
   import {mapState, mapActions, mapMutations} from 'vuex'
-  import * as types from '../../store/mutation-types.js'
+  import * as types from 'store/mutation-types'
   import animations from 'create-keyframe-animation'
   import {perfixStyle, getStyle} from 'common/js/dom'
 
@@ -69,7 +71,8 @@
   export default {
     data() {
       return {
-        cdStyle: ''
+        cdStyle: '',
+        angle: 0
       }
     },
     computed: {
@@ -101,8 +104,8 @@
       playing(newPlaying) {
         const audio = this.$refs.audio
         if (!newPlaying) {
-          let cdStyle = getStyle(this.$refs.cdImage)[transform]
-          this.cdStyle = `transform: ${cdStyle}`
+          const radian = this._calculateAndSaveAngle()
+          this.cdStyle = `transform: matrix(${Math.cos(radian)}, ${Math.sin(radian)}, ${-Math.sin(radian)}, ${Math.cos(radian)}, 0, 0)`
         }
         this.$nextTick(() => {
           newPlaying ? audio.play() : audio.pause()
@@ -180,6 +183,15 @@
         const x = -(window.innerWidth / 2 - paddingLeft) // 水平位移
         const y = window.innerHeight - paddingTop - paddingBottom - width / 2
         return {x, y, scale}
+      },
+      _calculateAndSaveAngle() {
+        let cdStyle = getStyle(this.$refs.cdImage)[transform]
+        let miniCdStyle = getStyle(this.$refs.miniCdImage)[transform]
+        cdStyle = cdStyle !== 'none' ? cdStyle : miniCdStyle
+        const [cos, sin] = cdStyle.split('(')[1].split(')')[0].split(',')
+        const angle = (Math.round(Math.atan2(sin, cos) * (180 / Math.PI)) + 360) % 360
+        this.angle = (this.angle + angle) % 360
+        return this.angle * (Math.PI / 180)
       }
     }
   }
@@ -280,7 +292,7 @@
                 border-radius: 50%
                 border: 10px solid rgba(255, 255, 255, .1)
 
-                &.play{
+                &.play {
                   animation: rotate 20s linear infinite
                 }
               }
@@ -350,12 +362,18 @@
         width: 40px
         padding: 0 10px 0 20px
 
-        &.play{
-          animation: rotate 20s linear infinite
-        }
-
-        img {
+        .imgWrapper{
+          width: 40px
+          height: 40px
           border-radius: 50%
+
+          img {
+            border-radius: 50%
+
+            &.play {
+              animation: rotate 20s linear infinite
+            }
+          }
         }
       }
 
