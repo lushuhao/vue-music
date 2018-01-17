@@ -20,8 +20,8 @@
         <div class="middle">
           <div class="middle-l">
             <div class="cd-wrapper" ref="cdWrapper">
-              <div class="cd">
-                <img class="image" :src="currentSong.image"/>
+              <div class="cd" :style="cdStyle">
+                <img ref="cdImage" :class="cdRotate" class="image" :src="currentSong.image"/>
               </div>
             </div>
           </div>
@@ -39,14 +39,16 @@
     </transition>
     <transition name="mini">
       <div class="mini-player" v-show="!fullScreen" @click="open">
-        <div class="icon">
+        <div class="icon" :class="cdRotate">
           <img width="40" height="40" :src="currentSong.image"/>
         </div>
         <div class="text">
           <h2 class="name" v-html="currentSong.name"></h2>
           <p class="desc" v-html="currentSong.singer"></p>
         </div>
-        <div class="control"></div>
+        <div class="control">
+          <i @click.stop="togglePlaying" :class="miniPlayIcon"></i>
+        </div>
         <div class="control">
           <i class="icon-playlist"></i>
         </div>
@@ -60,11 +62,16 @@
   import {mapState, mapActions, mapMutations} from 'vuex'
   import * as types from '../../store/mutation-types.js'
   import animations from 'create-keyframe-animation'
-  import {perfixStyle} from 'common/js/dom'
+  import {perfixStyle, getStyle} from 'common/js/dom'
 
   const transform = perfixStyle('transform')
 
   export default {
+    data() {
+      return {
+        cdStyle: ''
+      }
+    },
     computed: {
       ...mapState([
         'fullScreen',
@@ -74,6 +81,12 @@
       ]),
       playIcon() {
         return this.playing ? 'icon-pause' : 'icon-play'
+      },
+      miniPlayIcon() {
+        return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
+      },
+      cdRotate() {
+        return this.playing ? 'play' : ''
       }
     },
     watch: {
@@ -87,6 +100,10 @@
       },
       playing(newPlaying) {
         const audio = this.$refs.audio
+        if (!newPlaying) {
+          let cdStyle = getStyle(this.$refs.cdImage)[transform]
+          this.cdStyle = `transform: ${cdStyle}`
+        }
         this.$nextTick(() => {
           newPlaying ? audio.play() : audio.pause()
         })
@@ -259,8 +276,13 @@
                 left: 0
                 width: 100%
                 height: 100%
+                box-sizing: border-box
                 border-radius: 50%
                 border: 10px solid rgba(255, 255, 255, .1)
+
+                &.play{
+                  animation: rotate 20s linear infinite
+                }
               }
             }
           }
@@ -328,6 +350,10 @@
         width: 40px
         padding: 0 10px 0 20px
 
+        &.play{
+          animation: rotate 20s linear infinite
+        }
+
         img {
           border-radius: 50%
         }
@@ -377,6 +403,15 @@
       }
       &.mini-enter, &.mini-leave-to {
         opacity: 0
+      }
+    }
+
+    @keyframes rotate {
+      0% {
+        transform: rotate(0)
+      }
+      100% {
+        transform: rotate(360deg)
       }
     }
   }
