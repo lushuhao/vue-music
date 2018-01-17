@@ -76,7 +76,9 @@
     watch: {
       currentSong(song) {
         this.setSongUrl(song.mid).then(() => {
-          this.$refs.audio.play()
+          document.addEventListener('touchstart', () => {
+            this.$refs.audio.play()
+          })
         })
       }
     },
