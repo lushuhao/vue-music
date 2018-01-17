@@ -30,7 +30,7 @@
           <div class="operators">
             <div class="icon"><i class="icon-sequence"></i></div>
             <div class="icon"><i class="icon-prev"></i></div>
-            <div class="icon i-center"><i class="icon-play"></i></div>
+            <div class="icon i-center"><i @click="togglePlaying" :class="playIcon"></i></div>
             <div class="icon"><i class="icon-next"></i></div>
             <div class="icon"><i class="icon-not-favorite"></i></div>
           </div>
@@ -52,7 +52,7 @@
         </div>
       </div>
     </transition>
-    <audio ref="audio" :src="currentSong.url"></audio>
+    <audio @select="initPlaySong" ref="audio" :src="currentSong.url"></audio>
   </div>
 </template>
 
@@ -71,13 +71,25 @@
         'playList',
         'currentSong',
         'playing'
-      ])
+      ]),
+      playIcon() {
+        return this.playing ? 'icon-pause' : 'icon-play'
+      }
     },
     watch: {
-      currentSong() {
-        document.addEventListener('touchstart', () => {
+      currentSong(song) {
+        if (!song.url) {
+          return
+        }
+        this.$nextTick(() => {
           this.$refs.audio.play()
-        }, {once: true})
+        })
+      },
+      playing(newPlaying) {
+        const audio = this.$refs.audio
+        this.$nextTick(() => {
+          newPlaying ? audio.play() : audio.pause()
+        })
       }
     },
     methods: {
@@ -85,7 +97,8 @@
         'setSongUrl'
       ]),
       ...mapMutations({
-        setFullScreen: types.SET_FULL_SCREEN
+        setFullScreen: types.SET_FULL_SCREEN,
+        setPlayingState: types.SET_PLAYING_STATE
       }),
       back() {
         this.setFullScreen(false)
@@ -133,6 +146,12 @@
       afterLeave(el) {
         this.$refs.cdWrapper.style.transition = ''
         this.$refs.cdWrapper.style[transform] = ''
+      },
+      togglePlaying() {
+        this.setPlayingState(!this.playing)
+      },
+      initPlaySong() {
+        this.$refs.audio.play()
       },
       _getPosAndScale() {
         const targetWidth = 40 // mini播放器CD的宽度
