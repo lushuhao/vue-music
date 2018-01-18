@@ -20,7 +20,7 @@
         <div class="middle">
           <div class="middle-l">
             <div class="cd-wrapper" ref="cdWrapper">
-              <div class="cd" :style="cdStyle">
+              <div class="cd" ref="cd">
                 <img ref="cdImage" :class="cdRotate" class="image" :src="currentSong.image"/>
               </div>
             </div>
@@ -40,7 +40,7 @@
     <transition name="mini">
       <div class="mini-player" v-show="!fullScreen" @click="open">
         <div class="icon">
-          <div class="imgWrapper" :style="cdStyle">
+          <div class="imgWrapper" ref="miniCd">
             <img ref="miniCdImage" width="40" height="40" :src="currentSong.image" :class="cdRotate"/>
           </div>
         </div>
@@ -67,12 +67,13 @@
   import {perfixStyle, getStyle} from 'common/js/dom'
 
   const transform = perfixStyle('transform')
+  //  const animationPlayState = perfixStyle('animationPlayState')
 
   export default {
     data() {
       return {
         cdStyle: '',
-        angle: 0
+        angle: 0,
       }
     },
     computed: {
@@ -104,8 +105,9 @@
       playing(newPlaying) {
         const audio = this.$refs.audio
         if (!newPlaying) {
-          const radian = this._calculateAndSaveAngle()
-          this.cdStyle = `transform: matrix(${Math.cos(radian)}, ${Math.sin(radian)}, ${-Math.sin(radian)}, ${Math.cos(radian)}, 0, 0)`
+          this._calculateAndSaveAngle()
+        } else {
+
         }
         this.$nextTick(() => {
           newPlaying ? audio.play() : audio.pause()
@@ -122,9 +124,11 @@
       }),
       back() {
         this.setFullScreen(false)
+        this._calculateAndSaveAngle('back')
       },
       open() {
         this.setFullScreen(true)
+        this._calculateAndSaveAngle('open')
       },
       enter(el, done) {
         const {x, y, scale} = this._getPosAndScale()
@@ -184,14 +188,40 @@
         const y = window.innerHeight - paddingTop - paddingBottom - width / 2
         return {x, y, scale}
       },
-      _calculateAndSaveAngle() {
+      _calculateAndSaveAngle(status) {
         let cdStyle = getStyle(this.$refs.cdImage)[transform]
         let miniCdStyle = getStyle(this.$refs.miniCdImage)[transform]
-        cdStyle = cdStyle !== 'none' ? cdStyle : miniCdStyle
-        const [cos, sin] = cdStyle.split('(')[1].split(')')[0].split(',')
-        const angle = (Math.round(Math.atan2(sin, cos) * (180 / Math.PI)) + 360) % 360
-        this.angle = (this.angle + angle) % 360
-        return this.angle * (Math.PI / 180)
+
+        let cd = this.$refs.cd
+        if (cdStyle === 'none') { // 判断当前是哪个播放器在显示
+          cdStyle = miniCdStyle
+          cd = this.$refs.miniCd
+        }
+
+        let cdTransform = getStyle(cd)[transform]
+
+        let cdRotate = cdStyle === 'none'
+
+        switch (status) {
+          case 'back':
+            cd = this.$refs.miniCd
+            if (cdRotate) {
+              cdStyle = this.$refs.cd.style[transform]
+              cdTransform = 'none'
+            }
+            break
+          case 'open':
+            cd = this.$refs.cd
+            if (cdRotate) {
+              cdStyle = this.$refs.miniCd.style[transform]
+              cdTransform = 'none'
+            }
+            break
+        }
+
+        cd.style[transform] = cdTransform === 'none'
+          ? cdStyle
+          : cdStyle.concat(' ', cdTransform)
       }
     }
   }
@@ -362,7 +392,7 @@
         width: 40px
         padding: 0 10px 0 20px
 
-        .imgWrapper{
+        .imgWrapper {
           width: 40px
           height: 40px
           border-radius: 50%
