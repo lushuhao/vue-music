@@ -106,8 +106,6 @@
         const audio = this.$refs.audio
         if (!newPlaying) {
           this._calculateAndSaveAngle()
-        } else {
-
         }
         this.$nextTick(() => {
           newPlaying ? audio.play() : audio.pause()
