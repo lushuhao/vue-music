@@ -1,8 +1,13 @@
 <template>
-  <div class="progress-bar" ref="progressBar">
+  <div class="progress-bar" ref="progressBar" @click="progressClick">
     <div class="bar-inner">
       <div class="progress" ref="progress"></div>
-      <div class="progress-btn-wrapper" ref="progressBtn">
+      <div class="progress-btn-wrapper"
+           ref="progressBtn"
+           @touchstart.prevent="progressTouchStart"
+           @touchmove.prevent="progressTouchMove"
+           @touchend="progressTouchEnd"
+      >
         <div class="progress-btn"></div>
       </div>
     </div>
@@ -24,12 +29,50 @@
     },
     watch: {
       percent(newPercent) {
-        if (newPercent >= 0) {
-          const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth
-          const offsetWidth = barWidth * newPercent
-          this.$refs.progress.style.width = `${offsetWidth}px`
-          this.$refs.progressBtn.style[transform] = `translateX(${offsetWidth}px)`
+        if (newPercent >= 0 && !this.touch.initiated) { // 不在拖动中
+          const offsetWidth = this._barWidth() * newPercent
+          this._offset(offsetWidth)
         }
+      }
+    },
+    created() {
+      this.touch = {}
+    },
+    methods: {
+      progressTouchStart(e) {
+        this.touch.initiated = true // 标志开始触摸
+        this.touch.startX = e.touches[0].pageX // 触摸点横向坐标
+        this.touch.left = this._progressWidth() // 当前触摸点距离初始位置的距离 = 当前 进度条的长度
+      },
+      progressTouchMove(e) {
+        if (!this.touch.initiated) { // 没有进入start事件
+          return
+        }
+        const deltaX = e.touches[0].pageX - this.touch.startX
+        const offsetWidth = Math.min(this._barWidth(), Math.max(0, this.touch.left + deltaX)) // 当前进度条偏移量，不小于0，不大于bar的宽度
+        this._offset(offsetWidth)
+      },
+      progressTouchEnd(e) {
+        this.touch.initiated = false
+        this._triggerPercent()
+      },
+      progressClick(e) {
+        this._offset(e.offsetX)
+        this._triggerPercent()
+      },
+      _triggerPercent() {
+        const percent = this._progressWidth() / this._barWidth()
+        this.$emit('percentChange', percent)
+      },
+      _offset(width) {
+        this.$refs.progress.style.width = `${width}px`
+        this.$refs.progressBtn.style[transform] = `translateX(${width}px)`
+      },
+      _barWidth() {
+        return this.$refs.progressBar.clientWidth - progressBtnWidth // 进度条实际能走的宽度
+      },
+      _progressWidth() {
+        return this.$refs.progress.clientWidth // 进度条当前的宽度
       }
     }
   }

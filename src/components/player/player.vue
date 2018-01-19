@@ -30,7 +30,7 @@
           <div class="progress-wrapper">
             <span class="time time-l">{{currentTime | date}}</span>
             <div class="progress-bar-wrapper">
-              <progress-bar :percent="percent"></progress-bar>
+              <progress-bar :percent="percent" @percentChange="onProgressBarChange"></progress-bar>
             </div>
             <span class="time time-r">{{currentSong.duration | date}}</span>
           </div>
@@ -240,6 +240,12 @@
       },
       updateTime(e) {
         this.currentTime = e.target.currentTime
+      },
+      onProgressBarChange(percent) { // 拖动点击进度回调修改百分比
+        this.$refs.audio.currentTime = this.currentSong.duration * percent
+        if (!this.playing) {
+          this.togglePlaying()
+        }
       },
       _getPosAndScale() {
         const targetWidth = 40 // mini播放器CD的宽度
