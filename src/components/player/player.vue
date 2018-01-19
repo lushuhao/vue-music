@@ -27,6 +27,11 @@
           </div>
         </div>
         <div class="bottom">
+          <div class="progress-wrapper">
+            <span class="time time-l">{{currentTime | date}}</span>
+            <div class="progress-bar-wrapper"></div>
+            <span class="time time-r">{{currentSong.duration | date}}</span>
+          </div>
           <div class="operators">
             <div class="icon"><i class="icon-sequence"></i></div>
             <div class="icon" :class="disableCls"><i @click="prev" class="icon-prev"></i></div>
@@ -56,7 +61,14 @@
         </div>
       </div>
     </transition>
-    <audio ref="audio" :src="currentSong.url" @select="initPlaySong" @canplay="ready" @error="error"></audio>
+    <audio ref="audio"
+           :src="currentSong.url"
+           @select="initPlaySong"
+           @canplay="ready"
+           @error="error"
+           @timeupdate="updateTime"
+    >
+    </audio>
   </div>
 </template>
 
@@ -65,6 +77,7 @@
   import * as types from 'store/mutation-types'
   import animations from 'create-keyframe-animation'
   import {perfixStyle, getStyle} from 'common/js/dom'
+  import {pad} from 'common/js/util'
 
   const transform = perfixStyle('transform')
   //  const animationPlayState = perfixStyle('animationPlayState')
@@ -74,7 +87,8 @@
       return {
         cdStyle: '',
         angle: 0,
-        songReady: false
+        songReady: false,
+        currentTime: 0
       }
     },
     computed: {
@@ -115,6 +129,14 @@
         this.$nextTick(() => {
           newPlaying ? audio.play() : audio.pause()
         })
+      }
+    },
+    filters: {
+      date(interval) {
+        interval = Math.floor(interval)
+        const minute = Math.floor(interval / 60)
+        const second = Math.floor(interval % 60)
+        return `${minute}:${pad(second)}`
       }
     },
     methods: {
@@ -210,6 +232,9 @@
       },
       error() {
         this.songReady = true // 出现错误，不执行ready，需要置为true，才能播放下首
+      },
+      updateTime(e) {
+        this.currentTime = e.target.currentTime
       },
       _getPosAndScale() {
         const targetWidth = 40 // mini播放器CD的宽度
@@ -370,6 +395,33 @@
         bottom: 50px
         width: 100%
 
+        .progress-wrapper {
+          display: flex
+          align-items: center
+          margin: 0 auto
+          width: 80%
+          padding: 10px 0
+
+          .time {
+            color: $color-text
+            font-size: $font-size-small
+            flex: 0 0 30px
+            line-height: 30px
+
+            &.time-l {
+              text-align: left
+            }
+
+            &.time-r {
+              text-align: right
+            }
+          }
+
+          .progress-bar-wrapper{
+            flex: 1
+          }
+        }
+
         .operators {
           display: flex
           align-items: center
@@ -379,7 +431,7 @@
             flex: 1
             text-align: center
 
-            &.disable{
+            &.disable {
               color: $color-theme-d
             }
 
