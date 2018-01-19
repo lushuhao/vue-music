@@ -10,15 +10,22 @@ export const selectPlay = ({commit, state}, {list, index}) => { // 两个参数c
   setCurrentSong({commit, state})
 }
 
-export const setCurrentSong = ({commit, state}) => {
-  let currentSong = state.playList[state.currentIndex]
+export const setCurrentSong = async ({commit, state}) => {
+  let playList = state.playList
+  let currentSong = playList[state.currentIndex]
   let mid = currentSong.mid
+
   commit(types.SET_CURRENT_SONG, currentSong)
 
-  return getSongUrl(mid).then(url => {
-    currentSong = Object.assign({}, currentSong, {url})
-    commit(types.SET_CURRENT_SONG, currentSong)
-    commit(types.SET_PLAYING_STATE, true)
-  })
+  if (!currentSong.url) { // 如果当前歌曲没有url，获取URL并保存到playList
+    await getSongUrl(mid).then(url => {
+      currentSong = Object.assign({}, currentSong, {url})
+      playList[state.currentIndex] = currentSong
 
+      commit(types.SET_CURRENT_SONG, currentSong)
+      commit(types.SET_PLAY_LIST, playList)
+    })
+  }
+
+  commit(types.SET_PLAYING_STATE, true)
 }

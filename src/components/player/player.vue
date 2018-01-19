@@ -29,9 +29,9 @@
         <div class="bottom">
           <div class="operators">
             <div class="icon"><i class="icon-sequence"></i></div>
-            <div class="icon"><i @click="prev" class="icon-prev"></i></div>
-            <div class="icon i-center"><i @click="togglePlaying" :class="playIcon"></i></div>
-            <div class="icon"><i @click="next" class="icon-next"></i></div>
+            <div class="icon" :class="disableCls"><i @click="prev" class="icon-prev"></i></div>
+            <div class="icon i-center" :class="disableCls"><i @click="togglePlaying" :class="playIcon"></i></div>
+            <div class="icon" :class="disableCls"><i @click="next" class="icon-next"></i></div>
             <div class="icon"><i class="icon-not-favorite"></i></div>
           </div>
         </div>
@@ -56,7 +56,7 @@
         </div>
       </div>
     </transition>
-    <audio @select="initPlaySong" ref="audio" :src="currentSong.url"></audio>
+    <audio ref="audio" :src="currentSong.url" @select="initPlaySong" @canplay="ready" @error="error"></audio>
   </div>
 </template>
 
@@ -74,6 +74,7 @@
       return {
         cdStyle: '',
         angle: 0,
+        songReady: false
       }
     },
     computed: {
@@ -92,6 +93,9 @@
       },
       cdRotate() {
         return this.playing ? 'play' : ''
+      },
+      disableCls() {
+        return this.songReady ? '' : 'disable'
       }
     },
     watch: {
@@ -178,20 +182,34 @@
         this.$refs.audio.play()
       },
       prev() {
+        if (!this.songReady) {
+          return
+        }
         let index = this.currentIndex - 1
         if (index === -1) {
           index = this.playList.length - 1  // 最后一首歌循环到第一首
         }
         this.setCurrentIndex(index)
         this.setCurrentSong()
+        this.songReady = false
       },
       next() {
+        if (!this.songReady) {
+          return
+        }
         let index = this.currentIndex + 1
         if (index === this.playList.length) {
           index = 0  // 最后一首歌循环到第一首
         }
         this.setCurrentIndex(index)
         this.setCurrentSong()
+        this.songReady = false
+      },
+      ready() {
+        this.songReady = true // 防止用户快速点击，加载好一首再点击下一首
+      },
+      error() {
+        this.songReady = true // 出现错误，不执行ready，需要置为true，才能播放下首
       },
       _getPosAndScale() {
         const targetWidth = 40 // mini播放器CD的宽度
@@ -360,6 +378,11 @@
           .icon {
             flex: 1
             text-align: center
+
+            &.disable{
+              color: $color-theme-d
+            }
+
             i {
               font-size: 30px
             }
