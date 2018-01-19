@@ -29,7 +29,9 @@
         <div class="bottom">
           <div class="progress-wrapper">
             <span class="time time-l">{{currentTime | date}}</span>
-            <div class="progress-bar-wrapper"></div>
+            <div class="progress-bar-wrapper">
+              <progress-bar :percent="percent"></progress-bar>
+            </div>
             <span class="time time-r">{{currentSong.duration | date}}</span>
           </div>
           <div class="operators">
@@ -78,9 +80,9 @@
   import animations from 'create-keyframe-animation'
   import {perfixStyle, getStyle} from 'common/js/dom'
   import {pad} from 'common/js/util'
+  import ProgressBar from 'base/progress-bar/progress-bar'
 
   const transform = perfixStyle('transform')
-  //  const animationPlayState = perfixStyle('animationPlayState')
 
   export default {
     data() {
@@ -110,6 +112,9 @@
       },
       disableCls() {
         return this.songReady ? '' : 'disable'
+      },
+      percent() {
+        return this.currentTime / this.currentSong.duration
       }
     },
     watch: {
@@ -282,6 +287,9 @@
           ? cdStyle
           : cdStyle.concat(' ', cdTransform)
       }
+    },
+    components: {
+      ProgressBar
     }
   }
 </script>
