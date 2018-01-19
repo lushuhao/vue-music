@@ -29,9 +29,9 @@
         <div class="bottom">
           <div class="operators">
             <div class="icon"><i class="icon-sequence"></i></div>
-            <div class="icon"><i class="icon-prev"></i></div>
+            <div class="icon"><i @click="prev" class="icon-prev"></i></div>
             <div class="icon i-center"><i @click="togglePlaying" :class="playIcon"></i></div>
-            <div class="icon"><i class="icon-next"></i></div>
+            <div class="icon"><i @click="next" class="icon-next"></i></div>
             <div class="icon"><i class="icon-not-favorite"></i></div>
           </div>
         </div>
@@ -81,7 +81,8 @@
         'fullScreen',
         'playList',
         'currentSong',
-        'playing'
+        'playing',
+        'currentIndex'
       ]),
       playIcon() {
         return this.playing ? 'icon-pause' : 'icon-play'
@@ -114,11 +115,12 @@
     },
     methods: {
       ...mapActions([
-        'setSongUrl'
+        'setCurrentSong'
       ]),
       ...mapMutations({
         setFullScreen: types.SET_FULL_SCREEN,
-        setPlayingState: types.SET_PLAYING_STATE
+        setPlayingState: types.SET_PLAYING_STATE,
+        setCurrentIndex: types.SET_CURRENT_INDEX,
       }),
       back() {
         this.setFullScreen(false)
@@ -174,6 +176,22 @@
       },
       initPlaySong() {
         this.$refs.audio.play()
+      },
+      prev() {
+        let index = this.currentIndex - 1
+        if (index === -1) {
+          index = this.playList.length - 1  // 最后一首歌循环到第一首
+        }
+        this.setCurrentIndex(index)
+        this.setCurrentSong()
+      },
+      next() {
+        let index = this.currentIndex + 1
+        if (index === this.playList.length) {
+          index = 0  // 最后一首歌循环到第一首
+        }
+        this.setCurrentIndex(index)
+        this.setCurrentSong()
       },
       _getPosAndScale() {
         const targetWidth = 40 // mini播放器CD的宽度

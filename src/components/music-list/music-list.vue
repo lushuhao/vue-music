@@ -110,7 +110,6 @@
         this.selectPlay({
           list: this.songs,
           index,
-          mid: item.mid
         })
       }
     },
