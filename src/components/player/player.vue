@@ -35,7 +35,7 @@
             <span class="time time-r">{{currentSong.duration | date}}</span>
           </div>
           <div class="operators">
-            <div class="icon"><i class="icon-sequence"></i></div>
+            <div class="icon" @click="changeMode"><i :class="iconMode"></i></div>
             <div class="icon" :class="disableCls"><i @click="prev" class="icon-prev"></i></div>
             <div class="icon i-center" :class="disableCls"><i @click="togglePlaying" :class="playIcon"></i></div>
             <div class="icon" :class="disableCls"><i @click="next" class="icon-next"></i></div>
@@ -84,6 +84,7 @@
   import {pad} from 'common/js/util'
   import ProgressBar from 'base/progress-bar/progress-bar'
   import ProgressCircle from 'base/progress-circle/progress-circle'
+  import {playMode} from 'common/js/config'
   import {Toast} from 'mint-ui'
 
   const transform = perfixStyle('transform')
@@ -104,7 +105,9 @@
         'playList',
         'currentSong',
         'playing',
-        'currentIndex'
+        'currentIndex',
+        'playMode',
+        'sequenceList'
       ]),
       playIcon() {
         return this.playing ? 'icon-pause' : 'icon-play'
@@ -120,6 +123,21 @@
       },
       percent() {
         return this.currentTime / this.currentSong.duration
+      },
+      iconMode() {
+        let mode
+        switch (this.playMode) {
+          case playMode.sequence:
+            mode = 'icon-sequence'
+            break
+          case playMode.loop:
+            mode = 'icon-loop'
+            break
+          case playMode.random:
+            mode = 'icon-random'
+            break
+        }
+        return mode
       }
     },
     watch: {
@@ -157,6 +175,7 @@
         setFullScreen: types.SET_FULL_SCREEN,
         setPlayingState: types.SET_PLAYING_STATE,
         setCurrentIndex: types.SET_CURRENT_INDEX,
+        setPlayMode: types.SET_PLAY_MODE
       }),
       back() {
         this.setFullScreen(false)
@@ -208,6 +227,9 @@
         this.$refs.cdWrapper.style[transform] = ''
       },
       togglePlaying() {
+        if (this.currentSong.url && this.currentSong.url.code === 0){
+          return Toast(this.currentSong.url.msg)
+        }
         this.setPlayingState(!this.playing)
       },
       initPlaySong() {
@@ -251,6 +273,10 @@
         if (!this.playing) {
           this.togglePlaying()
         }
+      },
+      changeMode() {
+        const mode = (this.playMode + 1) % 3 // 获取下一种模式
+        this.setPlayMode(mode)
       },
       _getPosAndScale() {
         const targetWidth = 40 // mini播放器CD的宽度
@@ -437,7 +463,7 @@
             }
           }
 
-          .progress-bar-wrapper{
+          .progress-bar-wrapper {
             flex: 1
           }
         }
