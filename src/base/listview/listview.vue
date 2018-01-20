@@ -127,7 +127,6 @@
         if (isNaN(anchorIndex) || anchorIndex < 0 || anchorIndex > this.data.length - 1) {
           return
         }
-        console.log(anchorIndex)
         this.$refs.listView.scrolltoElement(this.$refs.listGroup[anchorIndex])
         this.currentIndex = anchorIndex
       },

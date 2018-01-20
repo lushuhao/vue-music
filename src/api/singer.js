@@ -1,7 +1,7 @@
 import {commonParams, options} from './config'
 import jsonp from 'common/js/jsonp'
 
-export function getSingerList() {
+export function getSingerList(pagenum) {
   const url = 'https://szc.y.qq.com/v8/fcg-bin/v8.fcg'
 
   const data = Object.assign({}, commonParams, {
@@ -9,7 +9,7 @@ export function getSingerList() {
     page: 'list',
     key: 'all_all_all',
     pagesize: 100,
-    pagenum: 1,
+    pagenum,
     notice: 0,
     hostUin: 0,
     platform: 'yqq',

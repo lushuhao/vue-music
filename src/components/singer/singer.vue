@@ -24,7 +24,10 @@
       }
     },
     created() {
-      this._getSingerList()
+      this.singerList = []
+      Promise.all([this._getSingerList(1), this._getSingerList(2)]).then(() => {
+        this.singers = this._normalizeSinger(this.singerList)
+      })
     },
     methods: {
       ...mapMutations({
@@ -34,10 +37,10 @@
         this.setSinger(singer)
         this.$router.push(`/singer/${singer.id}`)
       },
-      _getSingerList() {
-        getSingerList().then(res => {
+      _getSingerList(pageNum) {
+        return getSingerList(pageNum).then(res => {
           if (res.code === ERR_OK) {
-            this.singers = this._normalizeSinger(res.data.list)
+            this.singerList = this.singerList.concat(res.data.list)
           }
         })
       },

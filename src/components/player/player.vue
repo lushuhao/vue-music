@@ -84,6 +84,7 @@
   import {pad} from 'common/js/util'
   import ProgressBar from 'base/progress-bar/progress-bar'
   import ProgressCircle from 'base/progress-circle/progress-circle'
+  import {Toast} from 'mint-ui'
 
   const transform = perfixStyle('transform')
 
