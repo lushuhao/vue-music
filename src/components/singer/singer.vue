@@ -26,7 +26,7 @@
     created() {
       this.singerList = []
       Promise.all([this._getSingerList(1), this._getSingerList(2)]).then(() => {
-        this.singers = this._normalizeSinger(this.singerList)
+        this.singers = this._normalizeSinger([...this.singerList[1], ...this.singerList[2]])
       })
     },
     methods: {
@@ -40,7 +40,7 @@
       _getSingerList(pageNum) {
         return getSingerList(pageNum).then(res => {
           if (res.code === ERR_OK) {
-            this.singerList = this.singerList.concat(res.data.list)
+            this.singerList[pageNum] = res.data.list
           }
         })
       },

@@ -227,7 +227,7 @@
         this.$refs.cdWrapper.style[transform] = ''
       },
       togglePlaying() {
-        if (this.currentSong.url && this.currentSong.url.code === 0){
+        if (this.currentSong.url && this.currentSong.url.code === 0) {
           return Toast(this.currentSong.url.msg)
         }
         this.setPlayingState(!this.playing)
