@@ -15,6 +15,8 @@ Vue.use(VueLazyLoad, {
   loading: require('common/image/default.png') // webpack解析替换成base64地址
 })
 
+window.bus = new Vue()
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

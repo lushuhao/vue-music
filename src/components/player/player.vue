@@ -38,7 +38,7 @@
             <div class="icon" @click="changeMode"><i :class="iconMode"></i></div>
             <div class="icon" :class="disableCls"><i @click="prev" class="icon-prev"></i></div>
             <div class="icon i-center" :class="disableCls"><i @click="togglePlaying"
-                                                                                          :class="playIcon"></i></div>
+                                                              :class="playIcon"></i></div>
             <div class="icon" :class="disableCls"><i @click="next" class="icon-next"></i></div>
             <div class="icon"><i class="icon-not-favorite"></i></div>
           </div>
@@ -68,7 +68,6 @@
     </transition>
     <audio ref="audio"
            :src="currentSong.url"
-           @select="initPlaySong"
            @canplay="ready"
            @error="error"
            @timeupdate="updateTime"
@@ -172,6 +171,11 @@
         return `${minute}:${pad(second)}`
       }
     },
+    mounted() {
+      window.bus.$on('audioPlay', () => {
+        this.$refs.audio.play()
+      })
+    },
     methods: {
       ...mapActions([
         'setCurrentSong'
@@ -237,9 +241,6 @@
           return Toast(this.currentSong.url.msg)
         }
         this.setPlayingState(!this.playing)
-      },
-      initPlaySong() {
-        this.$refs.audio.play()
       },
       end() {
         if (this.playMode === playMode.loop) {

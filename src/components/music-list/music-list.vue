@@ -107,15 +107,20 @@
         this.$router.back()
       },
       selectItem(item, index) {
+        this.emit()
         this.selectPlay({
           list: this.songs,
           index,
         })
       },
       random() {
+        this.emit()
         this.randomPlay({
           list: this.songs
         })
+      },
+      emit() {
+        window.bus.$emit('audioPlay')
       }
     },
     components: {
