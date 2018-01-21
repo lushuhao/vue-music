@@ -26,8 +26,17 @@ export const setCurrentSong = async ({commit, state}) => {
       currentSong = Object.assign({}, currentSong, {url})
       playList[state.currentIndex] = currentSong
 
+      let sequenceIndex = state.sequenceList.findIndex(item => {
+        return item.id === currentSong.id
+      })
+
+      let sequenceList = state.sequenceList
+
+      sequenceList[sequenceIndex] = currentSong // 保存歌曲地址到原始列表
+
       commit(types.SET_CURRENT_SONG, currentSong)
       commit(types.SET_PLAY_LIST, playList)
+      commit(types.SET_SEQUENCE_LIST, sequenceList)
     })
   }
 

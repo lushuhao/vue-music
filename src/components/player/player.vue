@@ -37,7 +37,7 @@
           <div class="operators">
             <div class="icon" @click="changeMode"><i :class="iconMode"></i></div>
             <div class="icon" :class="disableCls"><i @click="prev" class="icon-prev"></i></div>
-            <div class="icon i-center" :class="disableCls"><i @click="togglePlaying" :class="playIcon"></i></div>
+            <div class="icon i-center" :class="iconMode !== 'icon-loop' && disableCls"><i @click="togglePlaying" :class="playIcon"></i></div>
             <div class="icon" :class="disableCls"><i @click="next" class="icon-next"></i></div>
             <div class="icon"><i class="icon-not-favorite"></i></div>
           </div>
@@ -81,7 +81,7 @@
   import * as types from 'store/mutation-types'
   import animations from 'create-keyframe-animation'
   import {perfixStyle, getStyle} from 'common/js/dom'
-  import {pad} from 'common/js/util'
+  import {pad, shuffle} from 'common/js/util'
   import ProgressBar from 'base/progress-bar/progress-bar'
   import ProgressCircle from 'base/progress-circle/progress-circle'
   import {playMode} from 'common/js/config'
@@ -157,6 +157,9 @@
         this.$nextTick(() => {
           newPlaying ? audio.play() : audio.pause()
         })
+      },
+      playMode(mode) {
+        this.songReady = mode !== playMode.loop
       }
     },
     filters: {
@@ -175,7 +178,8 @@
         setFullScreen: types.SET_FULL_SCREEN,
         setPlayingState: types.SET_PLAYING_STATE,
         setCurrentIndex: types.SET_CURRENT_INDEX,
-        setPlayMode: types.SET_PLAY_MODE
+        setPlayMode: types.SET_PLAY_MODE,
+        setPlayList: types.SET_PLAY_LIST,
       }),
       back() {
         this.setFullScreen(false)
@@ -277,6 +281,25 @@
       changeMode() {
         const mode = (this.playMode + 1) % 3 // 获取下一种模式
         this.setPlayMode(mode)
+        let list = []
+        switch (mode) {
+          case playMode.random:
+            list = shuffle(this.sequenceList)
+            break
+          case playMode.sequence:
+            list = this.sequenceList
+            break
+          case playMode.loop:
+            list = [this.currentSong]
+        }
+        this.resetCurrentIndex(list)
+        this.setPlayList(list)
+      },
+      resetCurrentIndex(list) {
+        let index = list.findIndex(item => {
+          return item.id === this.currentSong.id
+        })
+        this.setCurrentIndex(index)
       },
       _getPosAndScale() {
         const targetWidth = 40 // mini播放器CD的宽度
