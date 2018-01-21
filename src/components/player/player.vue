@@ -37,7 +37,8 @@
           <div class="operators">
             <div class="icon" @click="changeMode"><i :class="iconMode"></i></div>
             <div class="icon" :class="disableCls"><i @click="prev" class="icon-prev"></i></div>
-            <div class="icon i-center" :class="iconMode !== 'icon-loop' && disableCls"><i @click="togglePlaying" :class="playIcon"></i></div>
+            <div class="icon i-center" :class="disableCls"><i @click="togglePlaying"
+                                                                                          :class="playIcon"></i></div>
             <div class="icon" :class="disableCls"><i @click="next" class="icon-next"></i></div>
             <div class="icon"><i class="icon-not-favorite"></i></div>
           </div>
@@ -71,6 +72,7 @@
            @canplay="ready"
            @error="error"
            @timeupdate="updateTime"
+           @ended="end"
     >
     </audio>
   </div>
@@ -138,6 +140,9 @@
             break
         }
         return mode
+      },
+      isPlayLoop() {
+        return this.playMode === playMode.loop
       }
     },
     watch: {
@@ -158,9 +163,6 @@
           newPlaying ? audio.play() : audio.pause()
         })
       },
-      playMode(mode) {
-        this.songReady = mode !== playMode.loop
-      }
     },
     filters: {
       date(interval) {
@@ -239,6 +241,13 @@
       initPlaySong() {
         this.$refs.audio.play()
       },
+      end() {
+        if (this.playMode === playMode.loop) {
+          this.loop()
+        } else {
+          this.next()
+        }
+      },
       prev() {
         if (!this.songReady) {
           return
@@ -247,6 +256,7 @@
         if (index === -1) {
           index = this.playList.length - 1  // 最后一首歌循环到第一首
         }
+        this.currentTime = 0
         this.setCurrentIndex(index)
         this.setCurrentSong()
         this.songReady = false
@@ -259,9 +269,14 @@
         if (index === this.playList.length) {
           index = 0  // 最后一首歌循环到第一首
         }
+        this.currentTime = 0
         this.setCurrentIndex(index)
         this.setCurrentSong()
         this.songReady = false
+      },
+      loop() {
+        this.$refs.audio.currentTime = 0
+        this.$refs.audio.play()
       },
       ready() {
         this.songReady = true // 防止用户快速点击，加载好一首再点击下一首
@@ -289,8 +304,8 @@
           case playMode.sequence:
             list = this.sequenceList
             break
-          case playMode.loop:
-            list = [this.currentSong]
+          case playMode.loop: // 单曲循环不用改变播放列表
+            return
         }
         this.resetCurrentIndex(list)
         this.setPlayList(list)
