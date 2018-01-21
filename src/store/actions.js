@@ -1,10 +1,24 @@
 import * as types from './mutation-types'
 import {getSongUrl} from 'api/song'
 import {Toast} from 'mint-ui'
+import {playMode} from 'common/js/config'
+import {shuffle} from 'common/js/util'
+
+function findIndex(list, song) {
+  return list.findIndex(item => {
+    return item.id === song.id
+  })
+}
 
 export const selectPlay = ({commit, state}, {list, index}) => { // 两个参数context默认store属性，playload手动传入并被添加到该对象中
   commit(types.SET_SEQUENCE_LIST, list)
-  commit(types.SET_PLAY_LIST, list)
+  if (state.playMode === playMode.random) {
+    let randomList = shuffle(list)
+    index = findIndex(randomList, list[index])
+    commit(types.SET_PLAY_LIST, randomList)
+  } else {
+    commit(types.SET_PLAY_LIST, list)
+  }
   commit(types.SET_CURRENT_INDEX, index)
   commit(types.SET_FULL_SCREEN, true)
 
@@ -45,4 +59,14 @@ export const setCurrentSong = async ({commit, state}) => {
   } else {
     commit(types.SET_PLAYING_STATE, true)
   }
+}
+
+export const randomPlay = ({commit, state}, {list}) => {
+  commit(types.SET_PLAY_MODE, playMode.random)
+  commit(types.SET_SEQUENCE_LIST, list)
+  let randomList = shuffle(list)
+  commit(types.SET_PLAY_LIST, randomList)
+  commit(types.SET_CURRENT_INDEX, 0)
+  commit(types.SET_FULL_SCREEN, true)
+  setCurrentSong({commit, state})
 }

@@ -7,12 +7,13 @@ export const pad = (num, n = 2) => { // 补0，默认两位
   return num
 }
 
-export function shuffle(arr) { // 对数组洗牌
-  for (let i = 0; i < arr.length; i++) {
+export function shuffle(arr) { // 对数组洗牌,有副作用，会修改原来的数组
+  let _arr = [...arr] // 深复制
+  for (let i = 0; i < _arr.length; i++) {
     let j = getRandomInt(0, i);
-    [arr[i], arr[j]] = [arr[j], arr[i]]
+    [_arr[i], _arr[j]] = [_arr[j], _arr[i]]
   }
-  return arr
+  return _arr
 }
 
 function getRandomInt(min, max) { // 获取[min, max]之间的一个随机数
