@@ -1,5 +1,5 @@
 <template>
-  <div class="recommend">
+  <div class="recommend" ref="recommend">
     <scroll ref="scroll" :data="discList" class="recommend-content">
       <div>
         <div v-if="slider.length" class="slider-wrapper">
@@ -33,8 +33,10 @@
   import Slider from 'base/slider/slider'
   import {getRecommend, getDiscList} from 'api/recommend'
   import {ERR_OK} from 'api/config'
+  import {playListMixin} from 'common/js/mixin'
 
   export default {
+    mixins: [playListMixin],
     data() {
       return {
         slider: [],   // 轮播图列表
@@ -47,6 +49,9 @@
       this._getDiscList()
     },
     methods: {
+      handlePlayList(playlist) {
+        this.changeScrollList(playlist, this.$refs.recommend, this.$refs.scroll)
+      },
       _getRecommend() {
         getRecommend().then(res => {
           if (res.code === ERR_OK) {
@@ -79,7 +84,10 @@
   @import "~common/stylus/variable"
 
   .recommend {
-    height: calc(100% - 44px - 44px);
+    position: fixed;
+    top: 88px;
+    bottom: 0;
+    width: 100%;
 
 
     .recommend-content{

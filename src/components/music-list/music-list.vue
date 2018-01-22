@@ -28,12 +28,14 @@
   import SongList from 'base/song-list/song-list'
   import {perfixStyle} from 'common/js/dom'
   import {mapActions} from 'vuex'
+  import {playListMixin} from 'common/js/mixin'
 
   const RESERVED_HEIGHT = 40  // 预留高度
   const transform = perfixStyle('transform')
   const backdrop = perfixStyle('backdrop-filter')
 
   export default {
+    mixins: [playListMixin],
     props: {
       bgImage: {
         type: String,
@@ -100,6 +102,9 @@
     },
     methods: {
       ...mapActions(['selectPlay', 'randomPlay']),
+      handlePlayList(playList) {
+        this.changeScrollList(playList, this.$refs.list.$el, this.$refs.list)
+      },
       scroll(pos) {
         this.scrollY = pos.y
       },
@@ -183,9 +188,9 @@
         z-index: 50
         width: 100%
 
-        .play{
+        .play {
           box-sizing: border-box
-          width:135px
+          width: 135px
           padding: 7px 0
           margin: 0 auto
           text-align: center
@@ -193,14 +198,14 @@
           border-radius: 100px
           font-size: 0
 
-          .icon-play{
+          .icon-play {
             display: inline-block
             vertical-align: middle
             margin-right: 6px
             font-size: $font-size-medium-x
           }
 
-          .text{
+          .text {
             display: inline-block
             vertical-align: middle
             font-size: $font-size-small

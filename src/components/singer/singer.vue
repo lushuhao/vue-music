@@ -1,6 +1,6 @@
 <template>
-  <div class="singer">
-    <list-view @select="selectSinger" :data="singers"></list-view>
+  <div class="singer" ref="singer">
+    <list-view @select="selectSinger" :data="singers" ref="list"></list-view>
     <transition name="slide">
       <router-view></router-view>
     </transition>
@@ -13,11 +13,13 @@
   import {getSingerList} from 'api/singer'
   import {ERR_OK} from 'api/config'
   import {mapMutations} from 'vuex'
+  import {playListMixin} from 'common/js/mixin'
 
   const HOT_TITLE = '热门'
   const HOT_SINGER_LEN = 10
 
   export default {
+    mixins: [playListMixin],
     data() {
       return {
         singers: []
@@ -33,6 +35,9 @@
       ...mapMutations({
         setSinger: 'SET_SINGER'
       }),
+      handlePlayList(playList) {
+        this.changeScrollList(playList, this.$refs.singer, this.$refs.list)
+      },
       selectSinger(singer) {
         this.setSinger(singer)
         this.$router.push(`/singer/${singer.id}`)
@@ -94,7 +99,10 @@
   @import "~common/stylus/variable"
 
   .singer {
-    height: calc(100% - 44px - 44px)
+    position: fixed;
+    top: 88px;
+    bottom: 0;
+    width: 100%;
 
     .slide-enter-active, .slide-leave-active {
       transition: all .3s

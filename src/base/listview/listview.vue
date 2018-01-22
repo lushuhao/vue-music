@@ -123,6 +123,9 @@
       scroll(pos) {
         this.scrollY = pos.y
       },
+      refresh() {
+        this.$refs.listView.refresh()
+      },
       _scrollTo(anchorIndex) {
         if (isNaN(anchorIndex) || anchorIndex < 0 || anchorIndex > this.data.length - 1) {
           return
