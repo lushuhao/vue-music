@@ -32,6 +32,7 @@ export const setCurrentSong = async ({commit, state}) => {
   if (!currentSong.url) { // 如果当前歌曲没有url，获取URL并保存到playList
     await currentSong.getSongUrl()
     await currentSong.getLyric() // 没有歌词, 获取并保存
+    currentSong = Object.assign({}, currentSong)
     playList[state.currentIndex] = currentSong
 
     let sequenceIndex = state.sequenceList.findIndex(item => {

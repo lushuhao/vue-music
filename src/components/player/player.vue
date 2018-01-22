@@ -87,6 +87,7 @@
   import ProgressCircle from 'base/progress-circle/progress-circle'
   import {playMode} from 'common/js/config'
   import {Toast} from 'mint-ui'
+  import Lyric from 'lyric-parser'
 
   const transform = perfixStyle('transform')
 
@@ -142,13 +143,14 @@
       },
       isPlayLoop() {
         return this.playMode === playMode.loop
-      }
+      },
     },
     watch: {
       currentSong(song) {
         if (!song.url) {
           return
         }
+        this.setLyric()
         this.$nextTick(() => {
           this.$refs.audio.play()
         })
@@ -316,6 +318,9 @@
           return item.id === this.currentSong.id
         })
         this.setCurrentIndex(index)
+      },
+      setLyric() {
+        this.currentLyric = new Lyric(this.currentSong.lyric)
       },
       _getPosAndScale() {
         const targetWidth = 40 // mini播放器CD的宽度

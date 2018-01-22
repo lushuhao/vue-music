@@ -1,6 +1,7 @@
 import {getSongUrl, getLyric} from 'api/song'
 import {ERR_OK} from 'api/config'
 import {Toast} from 'mint-ui'
+import {Base64} from 'js-base64'
 
 export default class Song {
   constructor({id, mid, singer, name, album, duration, image}) {
@@ -25,7 +26,9 @@ export default class Song {
   async getLyric() {
     await getLyric(this.mid).then(res => {
       if (res.retcode === ERR_OK) {
-        this.lyric = window.atob(res.lyric)
+        this.lyric = Base64.decode(res.lyric)
+      } else {
+        this.lyric = 'no lyric'
       }
     })
   }
