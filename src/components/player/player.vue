@@ -172,7 +172,7 @@
       }
     },
     mounted() {
-      window.bus.$on('audioPlay', () => {
+      window.bus.$once('audioPlay', () => {
         this.$refs.audio.play()
       })
     },
