@@ -1,4 +1,6 @@
-// import {getSongUrl} from 'api/song'
+import {getSongUrl, getLyric} from 'api/song'
+import {ERR_OK} from 'api/config'
+import {Toast} from 'mint-ui'
 
 export default class Song {
   constructor({id, mid, singer, name, album, duration, image}) {
@@ -9,6 +11,23 @@ export default class Song {
     this.album = album
     this.duration = duration
     this.image = image
+  }
+
+  async getSongUrl() {
+    await getSongUrl(this.mid).then(url => {
+      if (url.code === ERR_OK) {
+        Toast(url.msg)
+      }
+      this.url = url
+    })
+  }
+
+  async getLyric() {
+    await getLyric(this.mid).then(res => {
+      if (res.retcode === ERR_OK) {
+        this.lyric = window.atob(res.lyric)
+      }
+    })
   }
 }
 

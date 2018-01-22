@@ -1,6 +1,4 @@
 import * as types from './mutation-types'
-import {getSongUrl} from 'api/song'
-import {Toast} from 'mint-ui'
 import {playMode} from 'common/js/config'
 import {shuffle} from 'common/js/util'
 
@@ -28,30 +26,25 @@ export const selectPlay = ({commit, state}, {list, index}) => { // 两个参数c
 export const setCurrentSong = async ({commit, state}) => {
   let playList = state.playList
   let currentSong = playList[state.currentIndex]
-  let mid = currentSong.mid
 
   commit(types.SET_CURRENT_SONG, currentSong)
 
   if (!currentSong.url) { // 如果当前歌曲没有url，获取URL并保存到playList
-    await getSongUrl(mid).then(url => {
-      if (url.code === 0) {
-        Toast(url.msg)
-      }
-      currentSong = Object.assign({}, currentSong, {url})
-      playList[state.currentIndex] = currentSong
+    await currentSong.getSongUrl()
+    await currentSong.getLyric() // 没有歌词, 获取并保存
+    playList[state.currentIndex] = currentSong
 
-      let sequenceIndex = state.sequenceList.findIndex(item => {
-        return item.id === currentSong.id
-      })
-
-      let sequenceList = state.sequenceList
-
-      sequenceList[sequenceIndex] = currentSong // 保存歌曲地址到原始列表
-
-      commit(types.SET_CURRENT_SONG, currentSong)
-      commit(types.SET_PLAY_LIST, playList)
-      commit(types.SET_SEQUENCE_LIST, sequenceList)
+    let sequenceIndex = state.sequenceList.findIndex(item => {
+      return item.id === currentSong.id
     })
+
+    let sequenceList = state.sequenceList
+
+    sequenceList[sequenceIndex] = currentSong // 保存歌曲地址到原始列表
+
+    commit(types.SET_CURRENT_SONG, currentSong)
+    commit(types.SET_PLAY_LIST, playList)
+    commit(types.SET_SEQUENCE_LIST, sequenceList)
   }
 
   if (currentSong.url.code === 0) { // 没有版权

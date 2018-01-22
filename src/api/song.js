@@ -1,5 +1,6 @@
-import {commonParams} from './config'
+import {commonParams, options} from './config'
 import axios from 'axios'
+import jsonp from 'common/js/jsonp'
 
 export async function getSongUrl(songmid) {
   const url = 'http://proxy.lushuhao.club/music/getSongUrl'
@@ -29,4 +30,15 @@ export async function getSongUrl(songmid) {
     }
   }
   return `http://dl.stream.qqmusic.qq.com/C400${songmid}.m4a?vkey=${vkey}&guid=5373641614&fromtag=66`
+}
+
+export function getLyric(mid) {
+  const url = 'http://proxy.lushuhao.club/music/getLyric'
+
+  const data = Object.assign({}, commonParams, {
+    songmid: mid,
+    platform: 'yqq',
+  })
+
+  return jsonp(url, data, options)
 }
