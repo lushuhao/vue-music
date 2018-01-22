@@ -1,7 +1,7 @@
 <template>
   <div ref="wrapper">
     <slot></slot>
-    <div class="loading-container" v-show="!data.length">
+    <div class="loading-container" v-show="data && !data.length">
       <loading></loading>
     </div>
   </div>

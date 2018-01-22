@@ -25,6 +25,17 @@
               </div>
             </div>
           </div>
+          <scroll class="middle-r" ref="lyricList" :data="currentLyric && currentLyric.lines">
+            <div class="lyric-wrapper">
+              <div v-if="currentLyric">
+                <p ref="lyricLine" class="text"
+                   :class="{'current': currentLineNum === index}"
+                   v-for="(line, index) in currentLyric.lines">
+                  {{line.txt}}
+                </p>
+              </div>
+            </div>
+          </scroll>
         </div>
         <div class="bottom">
           <div class="progress-wrapper">
@@ -88,8 +99,10 @@
   import {playMode} from 'common/js/config'
   import {Toast} from 'mint-ui'
   import Lyric from 'lyric-parser'
+  import Scroll from 'base/scroll/scroll'
 
   const transform = perfixStyle('transform')
+  const lyricLineHeight = 32 // 歌词单行高度
 
   export default {
     data() {
@@ -98,7 +111,9 @@
         angle: 0,
         songReady: false,
         currentTime: 0,
-        radius: 32
+        radius: 32,
+        currentLyric: null,
+        currentLineNum: 0
       }
     },
     computed: {
@@ -320,7 +335,20 @@
         this.setCurrentIndex(index)
       },
       setLyric() {
-        this.currentLyric = new Lyric(this.currentSong.lyric)
+        this.currentLyric = new Lyric(this.currentSong.lyric, this.handleLyric)
+        this.lyricMiddleLine = Math.floor(this.$refs.lyricList.$el.clientHeight / 32 / 2)
+        if (this.playing) {
+          this.currentLyric.play()
+        }
+      },
+      handleLyric({lineNum, txt}) {
+        this.currentLineNum = lineNum
+        if (this.lyricMiddleLine < lineNum) {
+          let lineEl = this.$refs.lyricLine[lineNum - this.lyricMiddleLine]
+          this.$refs.lyricList.scrolltoElement(lineEl, 1000)
+        } else {
+          this.$refs.lyricList.scrollto(0, 0, 1000)
+        }
       },
       _getPosAndScale() {
         const targetWidth = 40 // mini播放器CD的宽度
@@ -371,7 +399,8 @@
     },
     components: {
       ProgressBar,
-      ProgressCircle
+      ProgressCircle,
+      Scroll
     }
   }
 </script>
@@ -441,9 +470,11 @@
         width: 100%
         top: 80px
         bottom: 170px
+        white-space: nowrap
 
         .middle-l {
           position: relative
+          display: inline-block
           width: 100%
           height: 0
           padding-top: 80%
@@ -474,6 +505,31 @@
                 &.play {
                   animation: rotate 20s linear infinite
                 }
+              }
+            }
+          }
+        }
+
+        .middle-r {
+          display: inline-block
+          vertical-align: top
+          width: 100%
+          height: 100%
+          overflow: hidden
+
+          .lyric-wrapper {
+            width: 80%
+            margin: 0 auto
+            overflow: hidden
+            text-align: center
+
+            .text{
+              line-height: 32px
+              color: $color-text-l
+              font-size: $font-size-medium
+
+              &.current{
+                color: $color-text
               }
             }
           }
