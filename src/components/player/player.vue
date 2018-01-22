@@ -17,8 +17,12 @@
           <h1 class="title" v-html="currentSong.name"></h1>
           <h2 class="subTitle" v-html="currentSong.singer"></h2>
         </div>
-        <div class="middle">
-          <div class="middle-l">
+        <div class="middle"
+             @touchstart.prevent="middleTouchStart"
+             @touchmove.prevent="middleTouchMove"
+             @touchend="middleTouchEnd"
+        >
+          <div class="middle-l" ref="middleL">
             <div class="cd-wrapper" ref="cdWrapper">
               <div class="cd" ref="cd">
                 <img ref="cdImage" :class="cdRotate" class="image" :src="currentSong.image"/>
@@ -38,6 +42,10 @@
           </scroll>
         </div>
         <div class="bottom">
+          <div class="dot-wrapper">
+            <div class="dot" :class="{'active': currentDotShow === 'cd'}"></div>
+            <div class="dot" :class="{'active': currentDotShow === 'lyric'}"></div>
+          </div>
           <div class="progress-wrapper">
             <span class="time time-l">{{currentTime | date}}</span>
             <div class="progress-bar-wrapper">
@@ -102,6 +110,7 @@
   import Scroll from 'base/scroll/scroll'
 
   const transform = perfixStyle('transform')
+  const transitionDuration = perfixStyle('transitionDuration')
   const lyricLineHeight = 32 // 歌词单行高度
 
   export default {
@@ -113,7 +122,8 @@
         currentTime: 0,
         radius: 32,
         currentLyric: null,
-        currentLineNum: 0
+        currentLineNum: 0,
+        currentDotShow: 'cd'
       }
     },
     computed: {
@@ -188,10 +198,14 @@
         return `${minute}:${pad(second)}`
       }
     },
+    created() {
+      this.touch = {}
+    },
     mounted() {
       window.bus.$once('audioPlay', () => {
         this.$refs.audio.play()
       })
+      this.lyricEl = this.$refs.lyricList.$el
     },
     methods: {
       ...mapActions([
@@ -336,7 +350,7 @@
       },
       setLyric() {
         this.currentLyric = new Lyric(this.currentSong.lyric, this.handleLyric)
-        this.lyricMiddleLine = Math.floor(this.$refs.lyricList.$el.clientHeight / 32 / 2)
+        this.lyricMiddleLine = Math.floor(this.lyricEl.clientHeight / lyricLineHeight / 2)
         if (this.playing) {
           this.currentLyric.play()
         }
@@ -349,6 +363,59 @@
         } else {
           this.$refs.lyricList.scrollto(0, 0, 1000)
         }
+      },
+      middleTouchStart(e) {
+        this.touch.initiated = true // 标志开始触摸
+        const touch = e.touches[0]
+        this.touch.startX = touch.pageX // 触摸点横向坐标
+        this.touch.startY = touch.pageY // 记录纵向坐标，因为歌词可以上下滚动
+      },
+      middleTouchMove(e) {
+        if (!this.touch.initiated) { // 没有进入start事件
+          return
+        }
+        const touch = e.touches[0]
+        const deltaX = touch.pageX - this.touch.startX
+        const deltaY = touch.pageY - this.touch.startY
+        if (Math.abs(deltaY) > Math.abs(deltaX)) { // 可以认为这是纵向滚动
+          return
+        }
+        const left = this.currentDotShow === 'cd' ? 0 : -window.innerWidth
+        const offsetWidth = Math.min(0, Math.max(-window.innerWidth, left + deltaX)) // 歌词距离屏幕左侧的距离
+        this.touch.percent = Math.abs(offsetWidth / window.innerWidth)
+        const opacity = 1 - this.touch.percent
+        this._lyricDomOperate(offsetWidth, 0, opacity)
+      },
+      middleTouchEnd(e) {
+        this.touch.initiated = false
+        let offsetWidth
+        let opacity
+        if (this.currentDotShow === 'cd') {
+          if (this.touch.percent > 0.2) { // 向左滑动20%
+            offsetWidth = -window.innerWidth
+            this.currentDotShow = 'lyric'
+            opacity = 0
+          } else {
+            offsetWidth = 0
+            opacity = 1
+          }
+        } else {
+          if (this.touch.percent < 0.8) { // 向右滑动20%，距离屏幕左侧80%
+            offsetWidth = 0
+            opacity = 1
+            this.currentDotShow = 'cd'
+          } else {
+            offsetWidth = -window.innerWidth
+            opacity = 0
+          }
+        }
+        this._lyricDomOperate(offsetWidth, 300, opacity)
+      },
+      _lyricDomOperate(offsetWidth, duration, opacity) {
+        this.lyricEl.style[transitionDuration] = `${duration}ms`
+        this.lyricEl.style[transform] = `translateX(${offsetWidth}px)`
+        this.$refs.middleL.style.opacity = `${opacity}`
+        this.$refs.middleL.style[transitionDuration] = `${duration}ms`
       },
       _getPosAndScale() {
         const targetWidth = 40 // mini播放器CD的宽度
@@ -540,6 +607,27 @@
         position: absolute
         bottom: 50px
         width: 100%
+
+        .dot-wrapper {
+          text-align: center
+          font-size: 0
+
+          .dot{
+            display: inline-block
+            vertical-align: middle
+            margin: 0 4px
+            width: 8px
+            height: 8px
+            border-radius: 50%
+            background-color: $color-text-l
+
+            &.active{
+              width: 20px
+              border-radius: 5px
+              background: $color-text-ll
+            }
+          }
+        }
 
         .progress-wrapper {
           display: flex
