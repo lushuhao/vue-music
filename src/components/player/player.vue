@@ -28,6 +28,9 @@
                 <img ref="cdImage" :class="cdRotate" class="image" :src="currentSong.image"/>
               </div>
             </div>
+            <div class="playing-lyric-wrapper">
+              <div class="playing-lyric">{{playingLyric}}</div>
+            </div>
           </div>
           <scroll class="middle-r" ref="lyricList" :data="currentLyric && currentLyric.lines">
             <div class="lyric-wrapper">
@@ -123,7 +126,8 @@
         radius: 32,
         currentLyric: null,
         currentLineNum: 0,
-        currentDotShow: 'cd'
+        currentDotShow: 'cd',
+        playingLyric: ''
       }
     },
     computed: {
@@ -174,6 +178,9 @@
       currentSong(song) {
         if (!song.url) {
           return
+        }
+        if (this.currentLyric) {
+          this.currentLyric.stop()
         }
         this.setLyric()
         this.$nextTick(() => {
@@ -272,6 +279,9 @@
           return Toast(this.currentSong.url.msg)
         }
         this.setPlayingState(!this.playing)
+        if (this.currentLyric) {
+          this.currentLyric.togglePlay()
+        }
       },
       end() {
         if (this.playMode === playMode.loop) {
@@ -284,31 +294,42 @@
         if (!this.songReady) {
           return
         }
-        let index = this.currentIndex - 1
-        if (index === -1) {
-          index = this.playList.length - 1  // 最后一首歌循环到第一首
+        if (this.playList.length === 1) {
+          this.loop()
+        } else {
+          let index = this.currentIndex - 1
+          if (index === -1) {
+            index = this.playList.length - 1  // 最后一首歌循环到第一首
+          }
+          this.currentTime = 0
+          this.setCurrentIndex(index)
+          this.setCurrentSong()
+          this.songReady = false
         }
-        this.currentTime = 0
-        this.setCurrentIndex(index)
-        this.setCurrentSong()
-        this.songReady = false
       },
       next() {
         if (!this.songReady) {
           return
         }
-        let index = this.currentIndex + 1
-        if (index === this.playList.length) {
-          index = 0  // 最后一首歌循环到第一首
+        if (this.playList.length === 1) {
+          this.loop()
+        } else {
+          let index = this.currentIndex + 1
+          if (index === this.playList.length) {
+            index = 0  // 最后一首歌循环到第一首
+          }
+          this.currentTime = 0
+          this.setCurrentIndex(index)
+          this.setCurrentSong()
+          this.songReady = false
         }
-        this.currentTime = 0
-        this.setCurrentIndex(index)
-        this.setCurrentSong()
-        this.songReady = false
       },
       loop() {
         this.$refs.audio.currentTime = 0
         this.$refs.audio.play()
+        if (this.currentLyric) {
+          this.currentLyric.seek(0)
+        }
       },
       ready() {
         this.songReady = true // 防止用户快速点击，加载好一首再点击下一首
@@ -320,9 +341,13 @@
         this.currentTime = e.target.currentTime
       },
       onProgressBarChange(percent) { // 拖动点击进度回调修改百分比
-        this.$refs.audio.currentTime = this.currentSong.duration * percent
+        const currentTime = this.currentSong.duration * percent
+        this.$refs.audio.currentTime = currentTime
         if (!this.playing) {
           this.togglePlaying()
+        }
+        if (this.currentLyric) {
+          this.currentLyric.seek(currentTime * 1000)
         }
       },
       changeMode() {
@@ -349,6 +374,12 @@
         this.setCurrentIndex(index)
       },
       setLyric() {
+        if (this.currentSong.lyric === 'no lyric') {
+          this.currentLyric = null
+          this.playingLyric = ''
+          this.currentLineNum = 0
+          return
+        }
         this.currentLyric = new Lyric(this.currentSong.lyric, this.handleLyric)
         this.lyricMiddleLine = Math.floor(this.lyricEl.clientHeight / lyricLineHeight / 2)
         if (this.playing) {
@@ -363,6 +394,7 @@
         } else {
           this.$refs.lyricList.scrollto(0, 0, 1000)
         }
+        this.playingLyric = txt
       },
       middleTouchStart(e) {
         this.touch.initiated = true // 标志开始触摸
@@ -573,6 +605,20 @@
                   animation: rotate 20s linear infinite
                 }
               }
+            }
+          }
+
+          .playing-lyric-wrapper{
+            width: 80%
+            margin: 30px auto
+            overflow: hidden
+            text-align: center
+
+            .playing-lyric{
+              height: 20px
+              line-height: 20px
+              font-size: $font-size-medium
+              color: $color-text-l
             }
           }
         }
