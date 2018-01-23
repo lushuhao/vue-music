@@ -11,6 +11,8 @@ const SingerDetail = () => import(/* webpackChunkName: "group-singer-detail" */ 
 
 const Disc = () => import(/* webpackChunkName: "group-disc" */ 'components/disc/disc')
 
+const Rank = () => import(/* webpackChunkName: "group-rank" */ 'components/rank/rank')
+
 export default new Router({
   mode: 'history',
   routes: [
@@ -35,6 +37,10 @@ export default new Router({
         path: ':id',
         component: SingerDetail
       }]
+    },
+    {
+      path: '/rank',
+      component: Rank
     }
   ]
 })
