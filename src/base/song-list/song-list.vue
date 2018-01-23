@@ -1,7 +1,7 @@
 <template>
   <div class="song-list">
-    <ul>
-      <li @click="selectItem(song,index)" v-for="(song, index) in songs" class="item">
+    <ul >
+      <li @click="selectItem(song,index)" v-for="(song, index) in songs" class="item" v-if="song">
         <div class="content">
           <h2 class="name">{{song.name}}</h2>
           <p class="desc">{{getDesc(song)}}</p>
