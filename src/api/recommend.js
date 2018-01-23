@@ -29,3 +29,27 @@ export async function getDiscList() {
 
   return res.data
 }
+
+export async function getSongList(disstid) {
+  const url = 'http://proxy.lushuhao.club/music/getDisc'
+
+  const data = Object.assign({}, commonParams, {
+    uin: 0,
+    format: 'json',
+    platform: 'yqq',
+    needNewCode: 0,
+    disstid,
+    type: 1,
+    json: 1,
+    utf8: 1,
+    onlysong: 1,
+    picmid: 1,
+    nosign: 0,
+  })
+
+  const res = await axios.get(url, {
+    params: data
+  })
+
+  return res.data
+}
