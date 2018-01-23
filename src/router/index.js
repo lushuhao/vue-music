@@ -13,6 +13,8 @@ const Disc = () => import(/* webpackChunkName: "group-disc" */ 'components/disc/
 
 const Rank = () => import(/* webpackChunkName: "group-rank" */ 'components/rank/rank')
 
+const TopList = () => import(/* webpackChunkName: "group-top-list" */ 'components/top-list/top-list')
+
 export default new Router({
   mode: 'history',
   routes: [
@@ -40,7 +42,13 @@ export default new Router({
     },
     {
       path: '/rank',
-      component: Rank
+      component: Rank,
+      children: [
+        {
+          path: ':id',
+          component: TopList
+        }
+      ]
     }
   ]
 })
