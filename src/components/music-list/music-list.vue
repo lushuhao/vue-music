@@ -3,7 +3,7 @@
     <div class="back" @click="back">
       <i class="icon-back"></i>
     </div>
-    <h1 class="title" v-html="title"></h1>
+    <marquee-title :title="title"></marquee-title>
     <div class="bg-image" :style="bgStyle" ref="bgImage">
       <div class="play-wrapper" v-show="songs.length" ref="playBtn" @click="random">
         <div class="play">
@@ -26,6 +26,7 @@
 <script type="text/ecmascript-6">
   import Scroll from 'base/scroll/scroll'
   import SongList from 'base/song-list/song-list'
+  import MarqueeTitle from 'base/marquee-title/marquee-title'
   import {perfixStyle} from 'common/js/dom'
   import {mapActions} from 'vuex'
   import {playListMixin} from 'common/js/mixin'
@@ -131,6 +132,7 @@
     components: {
       Scroll,
       SongList,
+      MarqueeTitle
     }
   }
 </script>
@@ -159,19 +161,6 @@
         font-size: $font-size-large-x
         color: $color-theme
       }
-    }
-
-    .title {
-      position: absolute
-      z-index: 40
-      top: 0
-      left: 10%
-      width: 80%
-      text-align: center
-      no-wrap()
-      line-height: 42px
-      font-size: $font-size-large
-      color: $color-text
     }
 
     .bg-image {

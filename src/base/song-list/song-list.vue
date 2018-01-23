@@ -44,6 +44,7 @@
       .content {
         flex: 1
         line-height: 20px
+        overflow: hidden
 
         .name {
           no-wrap()

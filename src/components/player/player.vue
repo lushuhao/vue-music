@@ -14,7 +14,7 @@
           <div class="back" @click="back">
             <i class="icon-back"></i>
           </div>
-          <h1 class="title" v-html="currentSong.name"></h1>
+          <marquee-title :title="currentSong.name"></marquee-title>
           <h2 class="subTitle" v-html="currentSong.singer"></h2>
         </div>
         <div class="middle"
@@ -111,6 +111,7 @@
   import {Toast} from 'mint-ui'
   import Lyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
+  import MarqueeTitle from 'base/marquee-title/marquee-title'
 
   const transform = perfixStyle('transform')
   const transitionDuration = perfixStyle('transitionDuration')
@@ -499,7 +500,8 @@
     components: {
       ProgressBar,
       ProgressCircle,
-      Scroll
+      Scroll,
+      MarqueeTitle
     }
   }
 </script>
@@ -541,22 +543,17 @@
 
           .icon-back {
             display: block
-            padding: 9px
+            padding: 10px
             font-size: $font-size-large-x
             transform: rotate(-90deg)
           }
         }
 
-        .title {
-          width: 70%
-          margin: 0 auto
-          line-height: 40px
-          text-align: center
-          no-wrap()
-          font-size: $font-size-large
-          color: $color-text
-        }
         .subTitle {
+          position: absolute
+          top: 42px
+          left: 0
+          right: 0
           line-height: 20px
           text-align: center
           font-size: $font-size-medium
