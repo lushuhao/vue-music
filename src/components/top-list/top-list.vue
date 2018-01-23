@@ -7,42 +7,42 @@
 <script type="text/ecmascript-6">
   import MusicList from 'components/music-list/music-list'
   import {mapState} from 'vuex'
-  import {getSongList} from 'api/recommend'
+  import {getMusicList} from 'api/rank'
   import {ERR_OK} from 'api/config'
   import {createSong} from 'common/js/song'
 
   export default {
     data() {
       return {
-        songs: []
+        songs: [],
+        bgImage: ''
       }
     },
     computed: {
       title() {
         return this.topList.topTitle
       },
-      bgImage() {
-        return this.topList.picUrl
-      },
       ...mapState(['topList'])
     },
     created() {
-      // this._getSongList()
+      this._getMusicList()
     },
     methods: {
-      _getSongList() {
+      _getMusicList() {
         if (!this.topList.id) {
           this.$router.push('/rank')
           return
         }
-        getSongList(this.topList.id).then(res => {
+        getMusicList(this.topList.id).then(res => {
           if (res.code === ERR_OK) {
+            this.bgImage = res.topinfo.pic_album
             this.songs = this._normalizeSongs(res.songlist)
           }
         })
       },
       _normalizeSongs(list) {
-        return list.map(musicData => {
+        return list.map(music => {
+          let musicData = music.data
           if (musicData.songid && musicData.albummid) {
             return createSong(musicData)
           }
