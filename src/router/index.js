@@ -9,6 +9,8 @@ const Singer = () => import(/* webpackChunkName: "group-singer" */ 'components/s
 
 const SingerDetail = () => import(/* webpackChunkName: "group-singer" */ 'components/singer/singerDetail')
 
+const Search = () => import(/* webpackChunkName: "group-search" */ 'components/search/search')
+
 export default new Router({
   mode: 'history',
   routes: [
@@ -27,6 +29,10 @@ export default new Router({
         path: ':id',
         component: SingerDetail
       }]
-    }
+    },
+    {
+      path: '/search',
+      component: Search,
+    },
   ]
 })
