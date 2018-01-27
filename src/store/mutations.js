@@ -24,7 +24,13 @@ const mutations = {
   },
   [types.SET_CURRENT_SONG](state, song) {
     state.currentSong = song
-  }
+  },
+  [types.SET_DISC](state, disc) {
+    state.disc = disc
+  },
+  [types.SET_TOP_LIST](state, list) {
+    state.topList = list
+  },
 }
 
 export default mutations

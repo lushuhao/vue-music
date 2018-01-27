@@ -7,7 +7,13 @@ const Recommend = () => import(/* webpackChunkName: "group-recommend" */ 'compon
 
 const Singer = () => import(/* webpackChunkName: "group-singer" */ 'components/singer/singer')
 
-const SingerDetail = () => import(/* webpackChunkName: "group-singer" */ 'components/singer/singerDetail')
+const SingerDetail = () => import(/* webpackChunkName: "group-singer-detail" */ 'components/singer/singerDetail')
+
+const Disc = () => import(/* webpackChunkName: "group-disc" */ 'components/disc/disc')
+
+const Rank = () => import(/* webpackChunkName: "group-rank" */ 'components/rank/rank')
+
+const TopList = () => import(/* webpackChunkName: "group-top-list" */ 'components/top-list/top-list')
 
 const Search = () => import(/* webpackChunkName: "group-search" */ 'components/search/search')
 
@@ -21,6 +27,12 @@ export default new Router({
     {
       path: '/recommend',
       component: Recommend,
+      children: [
+        {
+          path: ':id',
+          component: Disc
+        }
+      ]
     },
     {
       path: '/singer',
@@ -29,6 +41,16 @@ export default new Router({
         path: ':id',
         component: SingerDetail
       }]
+    },
+    {
+      path: '/rank',
+      component: Rank,
+      children: [
+        {
+          path: ':id',
+          component: TopList
+        }
+      ]
     },
     {
       path: '/search',

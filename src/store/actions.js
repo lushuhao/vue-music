@@ -36,6 +36,9 @@ export const setCurrentSong = async ({commit, state}) => {
     playList[state.currentIndex] = currentSong
 
     let sequenceIndex = state.sequenceList.findIndex(item => {
+      if (!item) {
+        return false
+      }
       return item.id === currentSong.id
     })
 
