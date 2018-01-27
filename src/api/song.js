@@ -5,18 +5,16 @@ import jsonp from 'common/js/jsonp'
 export async function getSongUrl(songmid) {
   const url = 'http://proxy.lushuhao.club/music/getSongUrl'
 
-  const data = Object.assign({}, commonParams, {
-    loginUin: 0,
-    hostUin: 0,
+  const data = {
+    ...commonParams,
     format: 'json',
     platform: 'yqq',
     needNewCode: 0,
     cid: 205361747,
-    uin: 0,
     songmid,
     filename: `C400${songmid}.m4a`,
     guid: 5373641614
-  })
+  }
 
   const res = await axios.get(url, {
     params: data
@@ -35,10 +33,11 @@ export async function getSongUrl(songmid) {
 export function getLyric(mid) {
   const url = 'http://proxy.lushuhao.club/music/getLyric'
 
-  const data = Object.assign({}, commonParams, {
+  const data = {
+    ...commonParams,
     songmid: mid,
     platform: 'yqq',
-  })
+  }
 
   return jsonp(url, data, options)
 }

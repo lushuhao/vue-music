@@ -11,9 +11,9 @@ export async function getRecommend() {
 export async function getDiscList() {
   const url = 'http://proxy.lushuhao.club/music/getDiscList'
 
-  const data = Object.assign({}, commonParams, {
+  const data = {
+    ...commonParams,
     rnd: Math.random(),
-    hostUin: 0,
     platform: 'yqq',
     needNewCode: 0,
     categoryId: 10000000,
@@ -21,7 +21,7 @@ export async function getDiscList() {
     sin: 0,
     ein: 29,
     format: 'json'
-  })
+  }
 
   let res = await axios.get(url, {
     params: data
@@ -33,7 +33,8 @@ export async function getDiscList() {
 export async function getSongList(disstid) {
   const url = 'http://proxy.lushuhao.club/music/getDisc'
 
-  const data = Object.assign({}, commonParams, {
+  const data = {
+    ...commonParams,
     uin: 0,
     format: 'json',
     platform: 'yqq',
@@ -45,7 +46,7 @@ export async function getSongList(disstid) {
     onlysong: 1,
     picmid: 1,
     nosign: 0,
-  })
+  }
 
   const res = await axios.get(url, {
     params: data
