@@ -17,7 +17,7 @@ export function getHotKey() {
   })
 }
 
-export function search(query, page, hasSinger) {
+export function search(query, page, hasSinger, perpage) {
   const url = 'search'
 
   const data = {
@@ -33,8 +33,8 @@ export function search(query, page, hasSinger) {
     ie: 'utf-8',
     sem: 1,
     aggr: 0,
-    perpage: 20,
-    n: 20,
+    perpage,
+    n: perpage,
     p: page,
     remoteplace: 'txt.mqq.all'
   }

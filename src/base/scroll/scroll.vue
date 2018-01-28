@@ -27,6 +27,10 @@
       listenScroll: {
         type: Boolean,
         default: false
+      },
+      pullUp: {
+        type: Boolean,
+        default: false
       }
     },
     mounted() {
@@ -55,6 +59,14 @@
           const vue = this // 保存this指向vue
           this.scroll.on('scroll', pos => {
             vue.$emit('scroll', pos)
+          })
+        }
+
+        if (this.pullUp) {
+          this.scroll.on('scrollEnd', () => { // 滚动结束触发一次
+            if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
+              this.$emit('scrollToEnd')
+            }
           })
         }
       },
