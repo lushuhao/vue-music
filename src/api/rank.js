@@ -2,7 +2,7 @@ import {commonParams} from './config'
 import axios from 'axios'
 
 export async function getTopList() {
-  const url = 'http://proxy.lushuhao.club/music/getTopList'
+  const url = 'getTopList'
 
   const data = {
     ...commonParams,
@@ -18,7 +18,7 @@ export async function getTopList() {
 }
 
 export async function getMusicList(topid) {
-  const url = 'http://proxy.lushuhao.club/music/getMusicList'
+  const url = 'getMusicList'
 
   const data = {
     ...commonParams,

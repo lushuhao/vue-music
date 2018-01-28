@@ -2,14 +2,14 @@ import axios from 'axios'
 import {commonParams} from './config'
 
 export async function getRecommend() {
-  const url = 'http://proxy.lushuhao.club/music/getRecommend' // 反向代理QQ音乐接口
+  const url = 'getRecommend' // 反向代理QQ音乐接口
 
   let res = await axios.get(url)
   return res.data
 }
 
 export async function getDiscList() {
-  const url = 'http://proxy.lushuhao.club/music/getDiscList'
+  const url = 'getDiscList'
 
   const data = {
     ...commonParams,
@@ -31,7 +31,7 @@ export async function getDiscList() {
 }
 
 export async function getSongList(disstid) {
-  const url = 'http://proxy.lushuhao.club/music/getDisc'
+  const url = 'getDisc'
 
   const data = {
     ...commonParams,

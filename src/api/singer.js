@@ -20,7 +20,7 @@ export function getSingerList(pagenum) {
 }
 
 export function getSingerDetail(mid, num = 100) {
-  const url = 'http://proxy.lushuhao.club/music/getSinger'
+  const url = 'getSinger'
 
   const data = {
     ...commonParams,

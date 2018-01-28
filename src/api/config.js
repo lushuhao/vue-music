@@ -11,3 +11,5 @@ export const options = { // jsonp库的回调函数name
 }
 
 export const ERR_OK = 0 // 错误码为0，即成功code=0
+
+export const baseURL = 'http://proxy.lushuhao.club/music/' // 代理服务器地址

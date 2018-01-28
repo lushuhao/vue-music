@@ -1,6 +1,8 @@
 import originJSONP from 'jsonp'
+import {baseURL} from 'api/config'
 
 export default function jsonp(url, data, option) {
+  url = setBaseUrl(url)
   url += (url.indexOf('?') === -1 ? '?' : '&') + param(data) // 判断是否有?号
 
   return new Promise((resolve, reject) => {
@@ -23,4 +25,12 @@ function param(data) {
     }
   }
   return url ? url.substring(1) : ''  // 删除第一个&，不确定是否有？
+}
+
+function setBaseUrl(url) {
+  if (url.includes('http')) {
+    return url
+  } else {
+    return baseURL + url
+  }
 }

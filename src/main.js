@@ -4,6 +4,8 @@ import router from './router'
 import store from './store'
 import fastclick from 'fastclick'
 import VueLazyLoad from 'vue-lazyload'
+import axios from 'axios'
+import {baseURL} from 'api/config'
 
 import 'common/stylus/index.styl'
 
@@ -14,6 +16,8 @@ fastclick.attach(document.body) // 取消300ms的touch延迟
 Vue.use(VueLazyLoad, {
   loading: require('common/image/default.png') // webpack解析替换成base64地址
 })
+
+axios.defaults.baseURL = baseURL
 
 window.bus = new Vue()
 

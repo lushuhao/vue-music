@@ -3,7 +3,7 @@ import axios from 'axios'
 import jsonp from 'common/js/jsonp'
 
 export async function getSongUrl(songmid) {
-  const url = 'http://proxy.lushuhao.club/music/getSongUrl'
+  const url = 'getSongUrl'
 
   const data = {
     ...commonParams,
@@ -31,7 +31,7 @@ export async function getSongUrl(songmid) {
 }
 
 export function getLyric(mid) {
-  const url = 'http://proxy.lushuhao.club/music/getLyric'
+  const url = 'getLyric'
 
   const data = {
     ...commonParams,

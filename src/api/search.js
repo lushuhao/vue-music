@@ -2,7 +2,7 @@ import {commonParams, options, ERR_OK} from './config'
 import jsonp from 'common/js/jsonp'
 
 export function getHotKey() {
-  const url = 'http://proxy.lushuhao.club/music/getHotKey'
+  const url = 'getHotKey'
 
   const data = {
     ...commonParams,
@@ -14,4 +14,7 @@ export function getHotKey() {
       return res.data
     }
   })
+}
+
+export function search() {
 }
