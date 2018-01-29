@@ -6,7 +6,7 @@
           ref="suggest"
   >
     <ul class="suggest-list">
-      <li class="suggest-item" v-for="item in result">
+      <li @click="selectItem(item)" class="suggest-item" v-for="item in result">
         <div class="icon">
           <i :class="getIconCls(item.type)"></i>
         </div>
@@ -24,6 +24,8 @@
   import {createSong} from 'common/js/song'
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
+  import Singer from 'common/js/singer'
+  import {mapMutations} from 'vuex'
 
   const TYPE_SINGER = 'singer'
   const PER_PAGE = 20
@@ -52,6 +54,9 @@
       }
     },
     methods: {
+      ...mapMutations({
+        setSinger: 'SET_SINGER'
+      }),
       search() {
         this.hasMore = true
         this.page = 1
@@ -78,6 +83,19 @@
         }
         this.page++
         this._search(false)
+      },
+      selectItem(item) {
+        if (item.type === 'singer') {
+          const singer = new Singer({
+            id: item.singerid,
+            mid: item.singermid,
+            name: item.singername
+          })
+          this.setSinger(singer)
+          this.$router.push({
+            path: `/search/${singer.id}`
+          })
+        }
       },
       _search(first) {
         search(this.query, this.page, this.showSinger, PER_PAGE).then(res => {

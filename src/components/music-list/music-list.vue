@@ -30,6 +30,7 @@
   import {perfixStyle} from 'common/js/dom'
   import {mapActions} from 'vuex'
   import {playListMixin} from 'common/js/mixin'
+  import {singerImage} from 'common/js/config'
 
   const RESERVED_HEIGHT = 40  // 预留高度
   const transform = perfixStyle('transform')
@@ -62,7 +63,7 @@
     },
     computed: {
       bgStyle() {
-        return `background-image: url(${this.bgImage})`
+        return `background-image: url(${this.bgImage}), url(${singerImage})`
       }
     },
     created() {
