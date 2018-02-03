@@ -33,7 +33,7 @@
             </div>
           </div>
           <scroll class="middle-r" ref="lyricList" :data="currentLyric && currentLyric.lines">
-            <div class="lyric-wrapper">
+            <div class="lyric-wrapper" :class="noLyric">
               <div v-if="currentLyric">
                 <p ref="lyricLine" class="text"
                    :class="{'current': currentLineNum === index}"
@@ -174,6 +174,9 @@
       isPlayLoop() {
         return this.playMode === playMode.loop
       },
+      noLyric() {
+        return this.currentLyric && this.currentLyric.lines && this.currentLyric.lines.length === 1 ? 'no-lyric' : ''
+      }
     },
     watch: {
       currentSong(song) {
@@ -183,6 +186,7 @@
         if (this.currentLyric) {
           this.currentLyric.stop()
         }
+        this.playingLyric = '' // 切换歌曲先清空歌词
         this.setLyric()
         this.$nextTick(() => {
           this.$refs.audio.play()
@@ -382,6 +386,13 @@
           return
         }
         this.currentLyric = new Lyric(this.currentSong.lyric, this.handleLyric)
+        if (this.currentLyric.lines.length === 0 && this.currentSong.lyric) {
+          const lyric = this.currentSong.lyric.split(/\]/)[1]
+          this.currentLyric.lines.push({
+            time: 0,
+            txt: lyric
+          })
+        }
         this.lyricMiddleLine = Math.floor(this.lyricEl.clientHeight / lyricLineHeight / 2)
         if (this.playing) {
           this.currentLyric.play()
@@ -632,6 +643,12 @@
             margin: 0 auto
             overflow: hidden
             text-align: center
+
+            &.no-lyric {
+              position: relative
+              top: calc(50% - 32px)
+              transform: translateY(-50%)
+            }
 
             .text{
               line-height: 32px
