@@ -35,12 +35,7 @@ export const setCurrentSong = async ({commit, state}) => {
     currentSong = Object.assign({}, currentSong)
     playList[state.currentIndex] = currentSong
 
-    let sequenceIndex = state.sequenceList.findIndex(item => {
-      if (!item) {
-        return false
-      }
-      return item.id === currentSong.id
-    })
+    let sequenceIndex = findIndex(state.sequenceList, currentSong)
 
     let sequenceList = state.sequenceList
 
@@ -64,6 +59,46 @@ export const randomPlay = ({commit, state}, {list}) => {
   let randomList = shuffle(list)
   commit(types.SET_PLAY_LIST, randomList)
   commit(types.SET_CURRENT_INDEX, 0)
+  commit(types.SET_FULL_SCREEN, true)
+  setCurrentSong({commit, state})
+}
+
+export const insertSong = ({commit, state}, song) => {
+  let playList = [...state.playList]
+  let sequenceList = [...state.sequenceList]
+  let {currentIndex, currentSong} = state
+
+  // 查找当前列表是否有待插入歌曲
+  let fpIndex = findIndex(playList, song)
+  // 插入歌曲索引加1
+  currentIndex++
+  playList.splice(currentIndex, 0, song)
+  // 如果已经包含这首歌
+  if (fpIndex > -1) {
+    // 如果当前歌曲索引大于列表中已有的索引
+    if (currentIndex > fpIndex) {
+      playList.splice(fpIndex, 1)
+      currentIndex--
+    } else {
+      // 插入了一首歌，后面的索引均要加1
+      playList.splice(fpIndex + 1, 1)
+    }
+  }
+
+  let currentSIndex = findIndex(sequenceList, currentSong) + 1
+  let fsIndex = findIndex(sequenceList, song)
+
+  if (fsIndex > -1) {
+    if (currentSIndex > fsIndex) {
+      sequenceList.splice(fsIndex, 1)
+    } else {
+      sequenceList.splice(fsIndex + 1, 1)
+    }
+  }
+
+  commit(types.SET_SEQUENCE_LIST, sequenceList)
+  commit(types.SET_PLAY_LIST, playList)
+  commit(types.SET_CURRENT_INDEX, currentIndex)
   commit(types.SET_FULL_SCREEN, true)
   setCurrentSong({commit, state})
 }
