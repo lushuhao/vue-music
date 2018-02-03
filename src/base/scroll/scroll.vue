@@ -1,7 +1,7 @@
 <template>
   <div ref="wrapper">
     <slot></slot>
-    <div class="loading-container" v-show="data && !data.length">
+    <div class="loading-container" v-show="hasLoading && data && !data.length">
       <loading></loading>
     </div>
   </div>
@@ -31,6 +31,10 @@
       pullUp: {
         type: Boolean,
         default: false
+      },
+      hasLoading: {
+        type: Boolean,
+        default: true
       }
     },
     mounted() {
