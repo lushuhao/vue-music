@@ -2,8 +2,10 @@
   <scroll class="suggest"
           :data="result"
           :pullUp="true"
+          :beforeScroll="true"
           :hasLoading="false"
           @scrollToEnd="searchMore"
+          @beforeScroll="listScroll"
           ref="suggest"
   >
     <ul class="suggest-list">
@@ -105,6 +107,9 @@
         } else {
           this.insertSong(item)
         }
+      },
+      listScroll() {
+        this.$emit('listScroll')
       },
       _search(first) {
         search(this.query, this.page, this.showSinger, PER_PAGE).then(res => {

@@ -32,6 +32,10 @@
         type: Boolean,
         default: false
       },
+      beforeScroll: {
+        type: Boolean,
+        default: false
+      },
       hasLoading: {
         type: Boolean,
         default: true
@@ -71,6 +75,12 @@
             if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
               this.$emit('scrollToEnd')
             }
+          })
+        }
+
+        if (this.beforeScroll) {
+          this.scroll.on('beforeScrollStart', () => { // 滚动之前派发
+            this.$emit('beforeScroll')
           })
         }
       },

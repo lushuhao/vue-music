@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="search-result" v-show="query">
-      <suggest :query="query"></suggest>
+      <suggest :query="query" @listScroll="blurInput"></suggest>
     </div>
     <router-view></router-view>
   </div>
@@ -42,6 +42,9 @@
       onQueryChange(query) {
         this.query = query
       },
+      blurInput() {
+        this.$refs.searchBox.blur()
+      },
       _getHotKey() {
         getHotKey().then(res => {
           this.hotKey = res.hotkey.slice(0, 10)
@@ -64,26 +67,26 @@
       margin: 20px
     }
 
-    .shortcut-wrapper{
+    .shortcut-wrapper {
       position: fixed
       top: 178px
       bottom: 0
       width: 100%
 
-      .shortcut{
+      .shortcut {
         height: 100%
         overflow: hidden
 
-        .hot-key{
+        .hot-key {
           margin: 0 20px 20px 20px
 
-          .title{
+          .title {
             margin-bottom: 20px
             font-size: $font-size-medium
             color: $color-text-l
           }
 
-          .item{
+          .item {
             display: inline-block
             padding: 5px 10px
             margin: 0 20px 10px 0
@@ -96,8 +99,7 @@
       }
     }
 
-
-    .search-result{
+    .search-result {
       position: fixed
       top: 178px
       bottom: 0
