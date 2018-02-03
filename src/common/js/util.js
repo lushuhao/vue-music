@@ -19,3 +19,15 @@ export function shuffle(arr) { // 对数组洗牌,有副作用，会修改原来
 function getRandomInt(min, max) { // 获取[min, max]之间的一个随机数
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
+
+export function debounce(func, delay) {
+  let timer
+  return function (...args) {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      func.apply(this, args)
+    }, delay)
+  }
+}
