@@ -11,6 +11,15 @@
             <li @click="addQuery(item.k)" class="item" v-for="item in hotKey">{{item.k}}</li>
           </ul>
         </div>
+        <div class="search-history" v-show="searchHistory.length">
+          <h1 class="title">
+            <span class="text">搜索历史</span>
+            <span class="clear">
+              <i class="icon-clear"></i>
+            </span>
+          </h1>
+          <search-list :searches="searchHistory"></search-list>
+        </div>
       </div>
     </div>
     <div class="search-result" v-show="query">
@@ -25,7 +34,7 @@
   import {getHotKey} from 'api/search'
   import Suggest from 'components/suggest/suggest'
   import {mapState, mapActions} from 'vuex'
-  import * as types from 'store/mutation-types'
+  import SearchList from 'base/search-list/search-list'
 
   export default {
     data() {
@@ -62,13 +71,15 @@
     },
     components: {
       SearchBox,
-      Suggest
+      Suggest,
+      SearchList
     }
   }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
+  @import "~common/stylus/mixin"
 
   .search {
 
@@ -103,6 +114,31 @@
             background: $color-highlight-background
             font-size: $font-size-medium
             color: $color-text-d
+          }
+        }
+      }
+
+      .search-history {
+        position: relative
+        margin: 0 20px
+        .title {
+          display: flex
+          align-items: center
+          justify-content: space-between
+          height: 40px
+          font-size: $font-size-medium
+          color: $color-text-l
+
+          .text {
+            flex: 1
+          }
+          .clear {
+            position: relative
+            extend-click()
+
+            .icon-clear {
+              color: $color-text-d
+            }
           }
         }
       }
