@@ -10,6 +10,10 @@ export function saveSearch(query) {
   return searches
 }
 
+export function getInitSearch() {
+  return store.get(SEARCH_KEY, [])
+}
+
 function insertArray(arr, val, compare, maxLen) {
   const index = arr.findIndex(compare)
   if (index === 0) {
