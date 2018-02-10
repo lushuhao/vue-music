@@ -11,6 +11,7 @@ const state = {
   currentSong: '', // 当前播放歌曲
   disc: {}, // 歌单详情页
   topList: {}, // 排行榜详情页
+  searchHistory: [], // 搜索历史
 }
 
 export default state
