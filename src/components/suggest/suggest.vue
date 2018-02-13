@@ -66,6 +66,9 @@
         setSinger: 'SET_SINGER'
       }),
       ...mapActions(['insertSong']),
+      refresh() {
+        this.$refs.suggest.refresh()
+      },
       search() {
         this.hasMore = true
         this.page = 1
