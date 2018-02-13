@@ -1,9 +1,9 @@
 <template>
   <div class="search-list">
     <ul>
-      <li class="search-item" v-for="item in searches">
+      <li @click="selectItem(item)" class="search-item" v-for="item in searches">
         <span class="text">{{item}}</span>
-        <span class="icon">
+        <span class="icon" @click.stop="deleteOne(item)">
           <i class="icon-delete"></i>
         </span>
       </li>
@@ -17,6 +17,14 @@
       searches: {
         type: Array,
         default: []
+      }
+    },
+    methods: {
+      selectItem(item) {
+        this.$emit('select', item)
+      },
+      deleteOne(item) {
+        this.$emit('delete', item)
       }
     }
   }
@@ -38,7 +46,8 @@
       }
 
       .icon{
-        extext-click()
+        extend-click()
+
         .icon-delete{
           font-size: $font-size-small
           color: $color-text-d

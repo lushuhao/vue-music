@@ -10,6 +10,20 @@ export function saveSearch(query) {
   return searches
 }
 
+export function deleteSearch(query) {
+  let searches = store.get(SEARCH_KEY, [])
+  deleteFromArray(searches, (item) => {
+    return item === query
+  })
+  store.set(SEARCH_KEY, searches)
+  return searches
+}
+
+export function clearSearch() {
+  store.remove(SEARCH_KEY)
+  return []
+}
+
 export function getInitSearch() {
   return store.get(SEARCH_KEY, [])
 }
@@ -28,6 +42,13 @@ function insertArray(arr, val, compare, maxLen) {
 
   if (maxLen && arr.length > maxLen) {
     arr.pop()
+  }
+}
+
+function deleteFromArray(arr, compare) {
+  const index = arr.findIndex(compare)
+  if (index > -1) {
+    arr.splice(index, 1)
   }
 }
 
