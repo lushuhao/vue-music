@@ -83,11 +83,12 @@
             <i @click.stop="togglePlaying" class="icon-mini" :class="miniPlayIcon"></i>
           </progress-circle>
         </div>
-        <div class="control">
+        <div class="control" @click.stop="showPlayList">
           <i class="icon-playlist"></i>
         </div>
       </div>
     </transition>
+    <play-list ref="playList"></play-list>
     <audio ref="audio"
            :src="currentSong.url"
            @canplay="ready"
@@ -112,6 +113,7 @@
   import Lyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
   import MarqueeTitle from 'base/marquee-title/marquee-title'
+  import PlayList from 'components/playlist/playlist'
 
   const transform = perfixStyle('transform')
   const transitionDuration = perfixStyle('transitionDuration')
@@ -170,9 +172,6 @@
             break
         }
         return mode
-      },
-      isPlayLoop() {
-        return this.playMode === playMode.loop
       },
       noLyric() {
         return this.currentLyric && this.currentLyric.lines && this.currentLyric.lines.length === 1 ? 'no-lyric' : ''
@@ -455,6 +454,9 @@
         }
         this._lyricDomOperate(offsetWidth, 300, opacity)
       },
+      showPlayList() {
+        this.$refs.playList.show()
+      },
       _lyricDomOperate(offsetWidth, duration, opacity) {
         this.lyricEl.style[transitionDuration] = `${duration}ms`
         this.lyricEl.style[transform] = `translateX(${offsetWidth}px)`
@@ -512,7 +514,8 @@
       ProgressBar,
       ProgressCircle,
       Scroll,
-      MarqueeTitle
+      MarqueeTitle,
+      PlayList
     }
   }
 </script>

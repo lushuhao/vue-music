@@ -5,8 +5,8 @@
         <div class="confirm-content">
           <p class="text" v-cloak>{{text}}</p>
           <div class="operate">
-            <div @click.stop="cancel" class="operate-btn left" v-cloak>{{cancelBtnText}}</div>
-            <div @click.stop="confirm" class="operate-btn" v-cloak>{{confirmBtnText}}</div>
+            <div @click="cancel" class="operate-btn left" v-cloak>{{cancelBtnText}}</div>
+            <div @click="confirm" class="operate-btn" v-cloak>{{confirmBtnText}}</div>
           </div>
         </div>
       </div>
