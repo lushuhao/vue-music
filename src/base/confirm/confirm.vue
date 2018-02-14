@@ -1,7 +1,7 @@
 <template>
   <transition name="confirm-fade">
     <div class="confirm" v-show="showFlag" @click="cancel">
-      <div class="confirm-wrapper" @click.stop="none">
+      <div class="confirm-wrapper" @click.stop>
         <div class="confirm-content">
           <p class="text" v-cloak>{{text}}</p>
           <div class="operate">

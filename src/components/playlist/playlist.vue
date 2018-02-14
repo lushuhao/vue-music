@@ -1,7 +1,7 @@
 <template>
   <transition name="list-fade">
     <div class="playlist" v-show="showFlag" @click="hide">
-      <div class="list-wrapper" @click.stop="none">
+      <div class="list-wrapper" @click.stop>
         <div class="list-header">
           <h1 class="title">
             <i class="icon"></i>
@@ -9,11 +9,11 @@
             <span class="clear"><i class="icon-clear"></i></span>
           </h1>
         </div>
-        <div class="list-content">
+        <scroll ref="listContent" class="list-content" :data="sequenceList">
           <transition-group name="list" tag="ul">
-            <li class="item" :key="1">
-              <i class="current"></i>
-              <span class="text"></span>
+            <li class="item" v-for="item in sequenceList" :key="item.id">
+              <i class="current" :class="getCurrentIcon(item)"></i>
+              <span class="text">{{item.name}}</span>
               <span class="like">
                 <i class="icon-favorite"></i>
               </span>
@@ -22,7 +22,7 @@
               </span>
             </li>
           </transition-group>
-        </div>
+        </scroll>
         <div class="list-operate">
           <div class="add">
             <i class="icon-add"></i>
@@ -38,21 +38,36 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {mapState} from 'vuex'
+  import Scroll from 'base/scroll/scroll'
+
   export default {
     data() {
       return {
         showFlag: false
       }
     },
+    computed: {
+      ...mapState(['sequenceList', 'currentSong'])
+    },
     methods: {
       show() {
         this.showFlag = true
+        this.$nextTick(() => {
+          this.$refs.listContent.refresh()
+        })
       },
       hide() {
         this.showFlag = false
       },
-      none() {
+      getCurrentIcon(song) {
+        if (this.currentSong.id === song.id) {
+          return 'icon-play'
+        }
       }
+    },
+    components: {
+      Scroll
     }
   }
 </script>
