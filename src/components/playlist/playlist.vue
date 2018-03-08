@@ -10,8 +10,8 @@
           </h1>
         </div>
         <scroll ref="listContent" class="list-content" :data="sequenceList">
-          <transition-group name="list" tag="ul">
-            <li class="item" v-for="item in sequenceList" :key="item.id">
+          <transition-group ref="list" name="list" tag="ul">
+            <li class="item" v-for="(item, index) in sequenceList" :key="item.id" @click="selectItem(item, index)">
               <i class="current" :class="getCurrentIcon(item)"></i>
               <span class="text">{{item.name}}</span>
               <span class="like">
@@ -38,8 +38,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {mapState} from 'vuex'
+  import {mapState, mapActions, mapMutations} from 'vuex'
   import Scroll from 'base/scroll/scroll'
+  import * as types from 'store/mutation-types'
+  import {playMode} from 'common/js/config'
 
   export default {
     data() {
@@ -48,13 +50,18 @@
       }
     },
     computed: {
-      ...mapState(['sequenceList', 'currentSong'])
+      ...mapState(['sequenceList', 'currentSong', 'playMode', 'playList'])
     },
     methods: {
+      ...mapActions(['setCurrentSong']),
+      ...mapMutations({
+        setCurrentIndex: types.SET_CURRENT_INDEX
+      }),
       show() {
         this.showFlag = true
         this.$nextTick(() => {
           this.$refs.listContent.refresh()
+          this.scrollToCurrent(this.currentSong)
         })
       },
       hide() {
@@ -64,6 +71,22 @@
         if (this.currentSong.id === song.id) {
           return 'icon-play'
         }
+        return ''
+      },
+      selectItem(item, index) {
+        if (this.playMode === playMode.random) {
+          index = this.playList.findIndex(song => {
+            return song.id === item.id
+          })
+        }
+        this.setCurrentIndex(index)
+        this.setCurrentSong() // 可以根据currentIndex来获取currentSong，不需要传递item
+      },
+      scrollToCurrent(current) {
+        let index = this.sequenceList.findIndex(song => {
+          return song.id === current.id
+        })
+        this.$refs.listContent.scrolltoElement(this.$refs.list.$el.children[index], 300)
       }
     },
     components: {
