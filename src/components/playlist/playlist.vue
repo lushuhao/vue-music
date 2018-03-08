@@ -17,7 +17,7 @@
               <span class="like">
                 <i class="icon-favorite"></i>
               </span>
-              <span class="delete">
+              <span class="delete" @click.stop="deleteOne(item)">
                 <i class="icon-delete"></i>
               </span>
             </li>
@@ -53,7 +53,7 @@
       ...mapState(['sequenceList', 'currentSong', 'playMode', 'playList'])
     },
     methods: {
-      ...mapActions(['setCurrentSong']),
+      ...mapActions(['setCurrentSong', 'deleteSong']),
       ...mapMutations({
         setCurrentIndex: types.SET_CURRENT_INDEX
       }),
@@ -87,6 +87,9 @@
           return song.id === current.id
         })
         this.$refs.listContent.scrolltoElement(this.$refs.list.$el.children[index], 300)
+      },
+      deleteOne(item) {
+        this.deleteSong(item)
       }
     },
     components: {

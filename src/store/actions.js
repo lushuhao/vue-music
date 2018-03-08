@@ -104,6 +104,29 @@ export const insertSong = ({commit, state}, song) => {
   setCurrentSong({commit, state})
 }
 
+export const deleteSong = ({commit, state}, song) => {
+  let playList = [...state.playList]
+  let sequenceList = [...state.sequenceList]
+  let {currentIndex} = state
+  let pIndex = findIndex(playList, song)
+  playList.splice(pIndex, 1)
+  let sIndex = findIndex(sequenceList, song)
+  sequenceList.splice(sIndex, 1)
+
+  if (currentIndex > pIndex || currentIndex === playList.length) {
+    currentIndex--
+  }
+
+  commit(types.SET_SEQUENCE_LIST, sequenceList)
+  commit(types.SET_PLAY_LIST, playList)
+  commit(types.SET_CURRENT_INDEX, currentIndex)
+  setCurrentSong({commit, state})
+
+  if (!playList.length) {
+    commit(types.SET_PLAYING_STATE, false)
+  }
+}
+
 export const saveSearchHistory = ({commit}, query) => {
   commit(types.SET_SEARCH_HISTORY, saveSearch(query)) // 存储到localStorage，再存储到state
 }
