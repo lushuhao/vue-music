@@ -4,8 +4,8 @@
       <div class="list-wrapper" @click.stop>
         <div class="list-header">
           <h1 class="title">
-            <i class="icon"></i>
-            <span class="text"></span>
+            <i class="icon" :class="iconMode" @click="changeMode"></i>
+            <span class="text">{{modeText}}</span>
             <span class="clear" @click="clear"><i class="icon-clear"></i></span>
           </h1>
         </div>
@@ -42,20 +42,35 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {mapState, mapActions, mapMutations} from 'vuex'
-  import Scroll from 'base/scroll/scroll'
-  import * as types from 'store/mutation-types'
-  import {playMode} from 'common/js/config'
   import Confirm from 'base/confirm/confirm'
+  import Scroll from 'base/scroll/scroll'
+  import {mapActions} from 'vuex'
+  import {playMode} from 'common/js/config'
+  import {playerMixin} from 'common/js/mixin'
 
   export default {
+    mixins: [playerMixin],
     data() {
       return {
         showFlag: false
       }
     },
     computed: {
-      ...mapState(['sequenceList', 'currentSong', 'playMode', 'playList'])
+      modeText() {
+        let text;
+        switch (this.playMode) {
+          case playMode.sequence:
+            text = '顺序播放'
+            break
+          case playMode.loop:
+            text = '单曲循环'
+            break
+          case playMode.random:
+            text = '随机播放'
+            break
+        }
+        return text
+      }
     },
     watch: {
       sequenceList(list) {
@@ -65,10 +80,7 @@
       }
     },
     methods: {
-      ...mapActions(['setCurrentSong', 'deleteSong', 'clearSong']),
-      ...mapMutations({
-        setCurrentIndex: types.SET_CURRENT_INDEX
-      }),
+      ...mapActions(['deleteSong', 'clearSong']),
       show() {
         this.showFlag = true
         this.$nextTick(() => {
@@ -102,6 +114,7 @@
       },
       deleteOne(item) {
         this.deleteSong(item)
+        this.scrollToCurrent(this.currentSong)
       },
       clear() {
         this.$refs.confirm.show()
