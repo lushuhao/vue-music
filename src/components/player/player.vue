@@ -179,7 +179,7 @@
     },
     watch: {
       currentSong(song) {
-        if (!song.url) {
+        if (!song || !song.url) {
           return
         }
         if (this.currentLyric) {

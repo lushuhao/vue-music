@@ -9,7 +9,7 @@
             <span class="clear"><i class="icon-clear"></i></span>
           </h1>
         </div>
-        <scroll ref="listContent" class="list-content" :data="sequenceList">
+        <scroll ref="listContent" class="list-content" :hasLoading="false" :data="sequenceList">
           <transition-group ref="list" name="list" tag="ul">
             <li class="item" v-for="(item, index) in sequenceList" :key="item.id" @click="selectItem(item, index)">
               <i class="current" :class="getCurrentIcon(item)"></i>
@@ -90,6 +90,9 @@
       },
       deleteOne(item) {
         this.deleteSong(item)
+        if (this.sequenceList.length === 0) {
+          this.hide()
+        }
       }
     },
     components: {

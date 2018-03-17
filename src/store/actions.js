@@ -89,6 +89,8 @@ export const insertSong = ({commit, state}, song) => {
   let currentSIndex = findIndex(sequenceList, currentSong) + 1
   let fsIndex = findIndex(sequenceList, song)
 
+  sequenceList.splice(currentSIndex, 0, song)
+
   if (fsIndex > -1) {
     if (currentSIndex > fsIndex) {
       sequenceList.splice(fsIndex, 1)
@@ -120,10 +122,11 @@ export const deleteSong = ({commit, state}, song) => {
   commit(types.SET_SEQUENCE_LIST, sequenceList)
   commit(types.SET_PLAY_LIST, playList)
   commit(types.SET_CURRENT_INDEX, currentIndex)
-  setCurrentSong({commit, state})
 
   if (!playList.length) {
     commit(types.SET_PLAYING_STATE, false)
+  } else {
+    setCurrentSong({commit, state})
   }
 }
 
