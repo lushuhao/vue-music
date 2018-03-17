@@ -130,6 +130,12 @@ export const deleteSong = ({commit, state}, song) => {
   }
 }
 
+export const clearSong = ({commit}) => {
+  commit(types.SET_SEQUENCE_LIST, [])
+  commit(types.SET_PLAY_LIST, [])
+  commit(types.SET_PLAYING_STATE, false)
+}
+
 export const saveSearchHistory = ({commit}, query) => {
   commit(types.SET_SEARCH_HISTORY, saveSearch(query)) // 存储到localStorage，再存储到state
 }

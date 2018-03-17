@@ -6,7 +6,7 @@
           <h1 class="title">
             <i class="icon"></i>
             <span class="text"></span>
-            <span class="clear"><i class="icon-clear"></i></span>
+            <span class="clear" @click="clear"><i class="icon-clear"></i></span>
           </h1>
         </div>
         <scroll ref="listContent" class="list-content" :hasLoading="false" :data="sequenceList">
@@ -33,6 +33,10 @@
           <span>关闭</span>
         </div>
       </div>
+      <confirm ref="confirm"
+               text="是否要清空播放列表"
+               confirmBtnText="清空"
+               @confirm="clearConfirm"></confirm>
     </div>
   </transition>
 </template>
@@ -42,6 +46,7 @@
   import Scroll from 'base/scroll/scroll'
   import * as types from 'store/mutation-types'
   import {playMode} from 'common/js/config'
+  import Confirm from 'base/confirm/confirm'
 
   export default {
     data() {
@@ -52,8 +57,15 @@
     computed: {
       ...mapState(['sequenceList', 'currentSong', 'playMode', 'playList'])
     },
+    watch: {
+      sequenceList(list) {
+        if (list.length <= 0) {
+          this.hide()
+        }
+      }
+    },
     methods: {
-      ...mapActions(['setCurrentSong', 'deleteSong']),
+      ...mapActions(['setCurrentSong', 'deleteSong', 'clearSong']),
       ...mapMutations({
         setCurrentIndex: types.SET_CURRENT_INDEX
       }),
@@ -90,13 +102,17 @@
       },
       deleteOne(item) {
         this.deleteSong(item)
-        if (this.sequenceList.length === 0) {
-          this.hide()
-        }
+      },
+      clear() {
+        this.$refs.confirm.show()
+      },
+      clearConfirm() {
+        this.clearSong()
       }
     },
     components: {
-      Scroll
+      Scroll,
+      Confirm
     }
   }
 </script>
@@ -206,12 +222,12 @@
             font-size: $font-size-small
             color: $color-theme
 
-            .icon-favorite{
+            .icon-favorite {
               color: $color-sub-theme
             }
           }
 
-          .delete{
+          .delete {
             extend-click()
             font-size: $font-size-small
             color: $color-theme
