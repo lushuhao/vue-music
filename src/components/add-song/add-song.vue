@@ -10,15 +10,24 @@
       <div class="search-box-wrapper">
         <search-box placeholder="搜索歌曲" @query="onQueryChange"></search-box>
       </div>
-      <div class="shortcut" v-show="!query"></div>
+      <div class="shortcut" v-show="!query">
+        <tab-bar :tabs="tabs"
+                 :currentIndex="currentIndex"
+                 @selectItem="tabChange">
+        </tab-bar>
+      </div>
       <div class="search-result" v-show="query">
-        <suggest :query="query" :showSinger="false" @listScroll="blurInput" @select="saveSearch"></suggest>
+        <suggest :query="query"
+                 :showSinger="false"
+                 @listScroll="blurInput"
+                 @select="saveSearch"></suggest>
       </div>
     </div>
   </transition>
 </template>
 
 <script type="text/ecmascript-6">
+  import TabBar from 'base/tab-bar/tab-bar'
   import {searchMixin} from 'common/js/mixin'
 
   export default {
@@ -26,6 +35,11 @@
     data() {
       return {
         showFlag: false,
+        currentIndex: 0,
+        tabs: [
+          {name: '最近播放'},
+          {name: '搜索历史'}
+        ]
       }
     },
     methods: {
@@ -35,7 +49,13 @@
       hide() {
         this.showFlag = false
       },
+      tabChange(index) {
+        this.currentIndex = index
+      }
     },
+    components: {
+      TabBar
+    }
   }
 </script>
 
@@ -52,26 +72,26 @@
     z-index: 200
     background-color: $color-background
 
-    &.slide-enter-active, &.slide-leave-active{
+    &.slide-enter-active, &.slide-leave-active {
       transition: all .3s
     }
 
-    &.slide-enter, &.slide-leave-to{
+    &.slide-enter, &.slide-leave-to {
       transform: translateX(100%)
     }
 
-    .header{
+    .header {
       position: relative
       height: 44px
       text-align: center
 
-      .title{
+      .title {
         line-height: 44px
         font-size: $font-size-large
         color: $color-text
       }
 
-      .close{
+      .close {
         position: absolute
         right: 12px
         top: 0
@@ -85,15 +105,15 @@
       }
     }
 
-    .search-box-wrapper{
+    .search-box-wrapper {
       margin: 20px
     }
 
-    .shortcut{
+    .shortcut {
 
     }
 
-    .search-result{
+    .search-result {
       position: fixed
       top: 124px
       bottom: 0
