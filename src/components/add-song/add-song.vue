@@ -8,13 +8,25 @@
         </div>
       </header>
       <div class="search-box-wrapper">
-        <search-box placeholder="搜索歌曲" @query="onQueryChange"></search-box>
+        <search-box ref="searchBox" placeholder="搜索歌曲" @query="onQueryChange"></search-box>
       </div>
       <div class="shortcut" v-show="!query">
         <tab-bar :tabs="tabs"
                  :currentIndex="currentIndex"
                  @selectItem="tabChange">
         </tab-bar>
+        <div class="list-wrapper">
+          <scroll ref="songList" v-show="currentIndex === 0" :data="playHistory" class="list-scroll">
+            <div class="list-inner">
+              <song-list :songs="playHistory" @select="selectSong"></song-list>
+            </div>
+          </scroll>
+          <scroll ref="searchList" v-show="currentIndex === 1" :data="searchHistory" class="list-scroll">
+            <div class="list-inner">
+              <search-list :searches="searchHistory" @select="addQuery" @delete="deleteSearchHistory"></search-list>
+            </div>
+          </scroll>
+        </div>
       </div>
       <div class="search-result" v-show="query">
         <suggest :query="query"
@@ -28,6 +40,10 @@
 
 <script type="text/ecmascript-6">
   import TabBar from 'base/tab-bar/tab-bar'
+  import SearchList from 'base/search-list/search-list'
+  import Scroll from 'base/scroll/scroll'
+  import SongList from 'base/song-list/song-list'
+  import {mapState, mapActions} from 'vuex'
   import {searchMixin} from 'common/js/mixin'
 
   export default {
@@ -42,19 +58,39 @@
         ]
       }
     },
+    computed: {
+      ...mapState(['playHistory'])
+    },
     methods: {
+      ...mapActions(['insertSong']),
       show() {
         this.showFlag = true
+        this.initScroll()
       },
       hide() {
         this.showFlag = false
       },
       tabChange(index) {
         this.currentIndex = index
+        this.initScroll()
+      },
+      initScroll() {
+        this.$nextTick(() => {
+          const scroll = this.currentIndex === 0 ? 'songList' : 'searchList'
+          this.$refs[scroll].refresh()
+        })
+      },
+      selectSong(song, index) {
+        if (index !== 0) {
+          this.insertSong(song)
+        }
       }
     },
     components: {
-      TabBar
+      TabBar,
+      SearchList,
+      Scroll,
+      SongList
     }
   }
 </script>
@@ -111,6 +147,21 @@
 
     .shortcut {
 
+      .list-wrapper {
+        position: absolute
+        top: 165px
+        bottom: 0
+        width: 100%
+
+        .list-scroll {
+          height: 100%
+          overflow: hidden
+
+          .list-inner {
+            padding: 20px 30px
+          }
+        }
+      }
     }
 
     .search-result {

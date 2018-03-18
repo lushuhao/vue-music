@@ -106,7 +106,7 @@
   import Scroll from 'base/scroll/scroll'
   import MarqueeTitle from 'base/marquee-title/marquee-title'
   import PlayList from 'components/playlist/playlist'
-  import {mapState, mapMutations} from 'vuex'
+  import {mapState, mapMutations, mapActions} from 'vuex'
   import * as types from 'store/mutation-types'
   import {perfixStyle, getStyle} from 'common/js/dom'
   import {pad} from 'common/js/util'
@@ -202,6 +202,7 @@
       this.lyricEl = this.$refs.lyricList.$el
     },
     methods: {
+      ...mapActions(['savePlayHistory']),
       ...mapMutations({
         setFullScreen: types.SET_FULL_SCREEN,
         setPlayingState: types.SET_PLAYING_STATE,
@@ -314,6 +315,7 @@
       },
       ready() {
         this.songReady = true // 防止用户快速点击，加载好一首再点击下一首
+        this.savePlayHistory(this.currentSong)
       },
       error() {
         this.songReady = true // 出现错误，不执行ready，需要置为true，才能播放下首
