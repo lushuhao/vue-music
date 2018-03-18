@@ -34,17 +34,15 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import SearchBox from 'base/search-box/search-box'
   import {getHotKey} from 'api/search'
-  import Suggest from 'components/suggest/suggest'
-  import {mapState, mapActions} from 'vuex'
+  import {mapActions} from 'vuex'
   import SearchList from 'base/search-list/search-list'
   import Confirm from 'base/confirm/confirm'
   import Scroll from 'base/scroll/scroll'
-  import {playListMixin} from 'common/js/mixin'
+  import {playListMixin, searchMixin} from 'common/js/mixin'
 
   export default {
-    mixins: [playListMixin],
+    mixins: [playListMixin, searchMixin],
     data() {
       return {
         hotKey: [],
@@ -52,7 +50,6 @@
       }
     },
     computed: {
-      ...mapState(['searchHistory']),
       shortcut() {
         return [...this.hotKey, ...this.searchHistory]
       }
@@ -70,22 +67,10 @@
       }
     },
     methods: {
-      ...mapActions(['saveSearchHistory', 'deleteSearchHistory', 'clearSearchHistory']),
+      ...mapActions(['clearSearchHistory']),
       handlePlayList(playlist) {
         this.changeScrollList(playlist, this.$refs.shortcut, this.$refs.scroll)
         this.changeScrollList(playlist, this.$refs.result, this.$refs.suggest)
-      },
-      addQuery(query) {
-        this.$refs.searchBox.setQuery(query)
-      },
-      onQueryChange(query) {
-        this.query = query
-      },
-      blurInput() {
-        this.$refs.searchBox.blur()
-      },
-      saveSearch() {
-        this.saveSearchHistory(this.query)
       },
       showConfirm() {
         this.$refs.confirm.show()
@@ -97,8 +82,6 @@
       },
     },
     components: {
-      SearchBox,
-      Suggest,
       SearchList,
       Confirm,
       Scroll

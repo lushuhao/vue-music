@@ -1,5 +1,5 @@
 <template>
-  <div class="search-box">
+  <div class="search-box" @click="focus">
     <i class="icon-search"></i>
     <input ref="query" type="text" class="box" v-model="query" :placeholder="placeholder" />
     <i @click="clear" v-show="query" class="icon-dismiss"></i>
@@ -35,6 +35,9 @@
       },
       blur() {
         this.$refs.query.blur()
+      },
+      focus() {
+        this.$refs.query.focus()
       }
     }
   }

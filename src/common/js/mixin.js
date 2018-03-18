@@ -1,3 +1,5 @@
+import SearchBox from 'base/search-box/search-box'
+import Suggest from 'components/suggest/suggest'
 import {mapState, mapMutations, mapActions} from 'vuex'
 import * as types from 'store/mutation-types'
 import {playMode} from 'common/js/config'
@@ -85,5 +87,35 @@ export const playerMixin = {
       })
       this.setCurrentIndex(index)
     },
+  }
+}
+
+export const searchMixin = {
+  data() {
+    return {
+      query: ''
+    }
+  },
+  computed: {
+    ...mapState(['searchHistory']),
+  },
+  methods: {
+    ...mapActions(['saveSearchHistory', 'deleteSearchHistory']),
+    onQueryChange(query) {
+      this.query = query
+    },
+    addQuery(query) {
+      this.$refs.searchBox.setQuery(query)
+    },
+    blurInput() {
+      this.$refs.searchBox.blur()
+    },
+    saveSearch() {
+      this.saveSearchHistory(this.query)
+    },
+  },
+  components: {
+    SearchBox,
+    Suggest
   }
 }
