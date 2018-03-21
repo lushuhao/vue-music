@@ -1,9 +1,9 @@
-import {commonParams, options} from './config'
+import {commonParams} from './config'
 import axios from 'axios'
-import jsonp from 'common/js/jsonp'
+// import jsonp from 'common/js/jsonp'
 
 export async function getSongUrl(songmid) {
-  const url = 'getSongUrl'
+  const url = process.env.NODE_ENV === 'production' ? 'getSongUrl' : 'http://localhost:3000/api/getSongUrl'
 
   const data = {
     ...commonParams,
@@ -31,7 +31,7 @@ export async function getSongUrl(songmid) {
 }
 
 export function getLyric(mid) {
-  const url = 'getLyric'
+  const url = process.env.NODE_ENV === 'production' ? 'getLyric' : 'http://localhost:3000/api/getLyric'
 
   const data = {
     ...commonParams,
@@ -39,5 +39,9 @@ export function getLyric(mid) {
     platform: 'yqq',
   }
 
-  return jsonp(url, data, options)
+  return axios.get(url, {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res.data)
+  })
 }
