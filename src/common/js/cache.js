@@ -1,6 +1,9 @@
 const SEARCH_KEY = '__search__'
 const SEARCH_MAX_LENGTH = 15
 
+const PLAY_KEY = '__PLAY__'
+const PLAY_MAX_LENGTH = 200
+
 export function saveSearch(query) {
   let searches = store.get(SEARCH_KEY, [])
   insertArray(searches, query, (item) => {
@@ -26,6 +29,28 @@ export function clearSearch() {
 
 export function getInitSearch() {
   return store.get(SEARCH_KEY, [])
+}
+
+export function savePlay(song) {
+  let songs = store.get(PLAY_KEY, [])
+  insertArray(songs, song, (item) => {
+    return item.id === song.id
+  }, PLAY_MAX_LENGTH)
+  store.set(PLAY_KEY, songs)
+  return songs
+}
+
+export function loadPlay() {
+  return store.get(PLAY_KEY, [])
+}
+
+export function deletePlay(song) {
+  let songs = store.get(PLAY_KEY, [])
+  deleteFromArray(songs, (item) => {
+    return item === song
+  })
+  store.set(PLAY_KEY, songs)
+  return songs
 }
 
 function insertArray(arr, val, compare, maxLen) {

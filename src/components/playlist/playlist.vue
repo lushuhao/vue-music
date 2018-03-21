@@ -4,12 +4,12 @@
       <div class="list-wrapper" @click.stop>
         <div class="list-header">
           <h1 class="title">
-            <i class="icon"></i>
-            <span class="text"></span>
-            <span class="clear"><i class="icon-clear"></i></span>
+            <i class="icon" :class="iconMode" @click="changeMode"></i>
+            <span class="text">{{modeText}}</span>
+            <span class="clear" @click="clear"><i class="icon-clear"></i></span>
           </h1>
         </div>
-        <scroll ref="listContent" class="list-content" :data="sequenceList">
+        <scroll ref="listContent" class="list-content" :hasLoading="false" :data="sequenceList">
           <transition-group ref="list" name="list" tag="ul">
             <li class="item" v-for="(item, index) in sequenceList" :key="item.id" @click="selectItem(item, index)">
               <i class="current" :class="getCurrentIcon(item)"></i>
@@ -24,7 +24,7 @@
           </transition-group>
         </scroll>
         <div class="list-operate">
-          <div class="add">
+          <div class="add" @click="addSong">
             <i class="icon-add"></i>
             <span class="text">添加歌曲到队列</span>
           </div>
@@ -33,30 +33,57 @@
           <span>关闭</span>
         </div>
       </div>
+      <confirm ref="confirm"
+               text="是否要清空播放列表"
+               confirmBtnText="清空"
+               @confirm="clearConfirm">
+      </confirm>
+      <add-song ref="addSong"></add-song>
     </div>
   </transition>
 </template>
 
 <script type="text/ecmascript-6">
-  import {mapState, mapActions, mapMutations} from 'vuex'
   import Scroll from 'base/scroll/scroll'
-  import * as types from 'store/mutation-types'
+  import Confirm from 'base/confirm/confirm'
+  import AddSong from 'components/add-song/add-song'
+  import {mapActions} from 'vuex'
   import {playMode} from 'common/js/config'
+  import {playerMixin} from 'common/js/mixin'
 
   export default {
+    mixins: [playerMixin],
     data() {
       return {
         showFlag: false
       }
     },
     computed: {
-      ...mapState(['sequenceList', 'currentSong', 'playMode', 'playList'])
+      modeText() {
+        let text
+        switch (this.playMode) {
+          case playMode.sequence:
+            text = '顺序播放'
+            break
+          case playMode.loop:
+            text = '单曲循环'
+            break
+          case playMode.random:
+            text = '随机播放'
+            break
+        }
+        return text
+      }
+    },
+    watch: {
+      sequenceList(list) {
+        if (list.length <= 0) {
+          this.hide()
+        }
+      }
     },
     methods: {
-      ...mapActions(['setCurrentSong', 'deleteSong']),
-      ...mapMutations({
-        setCurrentIndex: types.SET_CURRENT_INDEX
-      }),
+      ...mapActions(['deleteSong', 'clearSong']),
       show() {
         this.showFlag = true
         this.$nextTick(() => {
@@ -90,10 +117,22 @@
       },
       deleteOne(item) {
         this.deleteSong(item)
+        this.scrollToCurrent(this.currentSong)
+      },
+      clear() {
+        this.$refs.confirm.show()
+      },
+      clearConfirm() {
+        this.clearSong()
+      },
+      addSong() {
+        this.$refs.addSong.show()
       }
     },
     components: {
-      Scroll
+      Scroll,
+      Confirm,
+      AddSong
     }
   }
 </script>
@@ -203,12 +242,12 @@
             font-size: $font-size-small
             color: $color-theme
 
-            .icon-favorite{
+            .icon-favorite {
               color: $color-sub-theme
             }
           }
 
-          .delete{
+          .delete {
             extend-click()
             font-size: $font-size-small
             color: $color-theme

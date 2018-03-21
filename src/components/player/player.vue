@@ -101,25 +101,27 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {mapState, mapActions, mapMutations} from 'vuex'
-  import * as types from 'store/mutation-types'
-  import animations from 'create-keyframe-animation'
-  import {perfixStyle, getStyle} from 'common/js/dom'
-  import {pad, shuffle} from 'common/js/util'
   import ProgressBar from 'base/progress-bar/progress-bar'
   import ProgressCircle from 'base/progress-circle/progress-circle'
-  import {playMode} from 'common/js/config'
-  import {Toast} from 'mint-ui'
-  import Lyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
   import MarqueeTitle from 'base/marquee-title/marquee-title'
   import PlayList from 'components/playlist/playlist'
+  import {mapState, mapMutations, mapActions} from 'vuex'
+  import * as types from 'store/mutation-types'
+  import {perfixStyle, getStyle} from 'common/js/dom'
+  import {pad} from 'common/js/util'
+  import {playMode} from 'common/js/config'
+  import {playerMixin} from 'common/js/mixin'
+  import animations from 'create-keyframe-animation'
+  import {Toast} from 'mint-ui'
+  import Lyric from 'lyric-parser'
 
   const transform = perfixStyle('transform')
   const transitionDuration = perfixStyle('transitionDuration')
   const lyricLineHeight = 32 // 歌词单行高度
 
   export default {
+    mixins: [playerMixin],
     data() {
       return {
         cdStyle: '',
@@ -136,12 +138,8 @@
     computed: {
       ...mapState([
         'fullScreen',
-        'playList',
-        'currentSong',
         'playing',
         'currentIndex',
-        'playMode',
-        'sequenceList'
       ]),
       playIcon() {
         return this.playing ? 'icon-pause' : 'icon-play'
@@ -158,28 +156,13 @@
       percent() {
         return this.currentTime / this.currentSong.duration
       },
-      iconMode() {
-        let mode
-        switch (this.playMode) {
-          case playMode.sequence:
-            mode = 'icon-sequence'
-            break
-          case playMode.loop:
-            mode = 'icon-loop'
-            break
-          case playMode.random:
-            mode = 'icon-random'
-            break
-        }
-        return mode
-      },
       noLyric() {
         return this.currentLyric && this.currentLyric.lines && this.currentLyric.lines.length === 1 ? 'no-lyric' : ''
       }
     },
     watch: {
       currentSong(song) {
-        if (!song.url) {
+        if (!song || !song.url) {
           return
         }
         if (this.currentLyric) {
@@ -219,15 +202,10 @@
       this.lyricEl = this.$refs.lyricList.$el
     },
     methods: {
-      ...mapActions([
-        'setCurrentSong'
-      ]),
+      ...mapActions(['savePlayHistory']),
       ...mapMutations({
         setFullScreen: types.SET_FULL_SCREEN,
         setPlayingState: types.SET_PLAYING_STATE,
-        setCurrentIndex: types.SET_CURRENT_INDEX,
-        setPlayMode: types.SET_PLAY_MODE,
-        setPlayList: types.SET_PLAY_LIST,
       }),
       back() {
         this.setFullScreen(false)
@@ -337,6 +315,7 @@
       },
       ready() {
         this.songReady = true // 防止用户快速点击，加载好一首再点击下一首
+        this.savePlayHistory(this.currentSong)
       },
       error() {
         this.songReady = true // 出现错误，不执行ready，需要置为true，才能播放下首
@@ -353,29 +332,6 @@
         if (this.currentLyric) {
           this.currentLyric.seek(currentTime * 1000)
         }
-      },
-      changeMode() {
-        const mode = (this.playMode + 1) % 3 // 获取下一种模式
-        this.setPlayMode(mode)
-        let list = []
-        switch (mode) {
-          case playMode.random:
-            list = shuffle(this.sequenceList)
-            break
-          case playMode.sequence:
-            list = this.sequenceList
-            break
-          case playMode.loop: // 单曲循环不用改变播放列表
-            return
-        }
-        this.resetCurrentIndex(list)
-        this.setPlayList(list)
-      },
-      resetCurrentIndex(list) {
-        let index = list.findIndex(item => {
-          return item.id === this.currentSong.id
-        })
-        this.setCurrentIndex(index)
       },
       setLyric() {
         if (this.currentSong.lyric === 'no lyric') {
