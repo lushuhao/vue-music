@@ -5,7 +5,7 @@ import store from './store'
 import fastclick from 'fastclick'
 import VueLazyLoad from 'vue-lazyload'
 import axios from 'axios'
-import {baseURL} from 'api/config'
+import {defaultConfig, response, responseError} from 'api/config'
 
 import 'common/stylus/index.styl'
 
@@ -17,7 +17,10 @@ Vue.use(VueLazyLoad, {
   loading: require('common/image/default.png') // webpack解析替换成base64地址
 })
 
-axios.defaults.baseURL = baseURL
+axios.defaults = Object.assign(axios.defaults, defaultConfig)
+
+// 添加响应拦截器
+axios.interceptors.response.use(response, responseError)
 
 window.bus = new Vue()
 

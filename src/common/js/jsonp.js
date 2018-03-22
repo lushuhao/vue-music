@@ -1,5 +1,5 @@
 import originJSONP from 'jsonp'
-import {baseURL} from 'api/config'
+import {defaultConfig} from 'api/config'
 
 export default function jsonp(url, data, option) {
   url = setBaseUrl(url)
@@ -31,6 +31,6 @@ function setBaseUrl(url) {
   if (url.includes('http')) {
     return url
   } else {
-    return baseURL + url
+    return defaultConfig.baseURL + url
   }
 }
