@@ -36,9 +36,11 @@
 <script type="text/ecmascript-6">
   import {getHotKey} from 'api/search'
   import {mapActions} from 'vuex'
+  import SearchBox from 'base/search-box/search-box'
   import SearchList from 'base/search-list/search-list'
   import Confirm from 'base/confirm/confirm'
   import Scroll from 'base/scroll/scroll'
+  import Suggest from 'components/suggest/suggest'
   import {playListMixin, searchMixin} from 'common/js/mixin'
 
   export default {
@@ -84,7 +86,9 @@
     components: {
       SearchList,
       Confirm,
-      Scroll
+      Scroll,
+      SearchBox,
+      Suggest
     }
   }
 </script>

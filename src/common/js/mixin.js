@@ -1,5 +1,3 @@
-import SearchBox from 'base/search-box/search-box'
-import Suggest from 'components/suggest/suggest'
 import {mapState, mapMutations, mapActions} from 'vuex'
 import * as types from 'store/mutation-types'
 import {playMode} from 'common/js/config'
@@ -113,9 +111,5 @@ export const searchMixin = {
     saveSearch() {
       this.saveSearchHistory(this.query)
     },
-  },
-  components: {
-    SearchBox,
-    Suggest
   }
 }
