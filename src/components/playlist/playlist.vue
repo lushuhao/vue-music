@@ -9,7 +9,10 @@
             <span class="clear" @click="clear"><i class="icon-clear"></i></span>
           </h1>
         </div>
-        <scroll ref="listContent" class="list-content" :hasLoading="false" :data="sequenceList">
+        <scroll ref="listContent"
+                class="list-content"
+                :hasLoading="false"
+                :data="sequenceList">
           <transition-group ref="list" name="list" tag="ul">
             <li class="item" v-for="(item, index) in sequenceList" :key="item.id" @click="selectItem(item, index)">
               <i class="current" :class="getCurrentIcon(item)"></i>
@@ -38,7 +41,7 @@
                confirmBtnText="清空"
                @confirm="clearConfirm">
       </confirm>
-      <add-song ref="addSong"></add-song>
+      <add-song ref="addSong" @addSongToList="scrollToCurrent"></add-song>
     </div>
   </transition>
 </template>
@@ -117,7 +120,6 @@
       },
       deleteOne(item) {
         this.deleteSong(item)
-        this.scrollToCurrent(this.currentSong)
       },
       clear() {
         this.$refs.confirm.show()
