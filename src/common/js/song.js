@@ -24,11 +24,10 @@ export default class Song {
   }
 
   async getLyric() {
+    this.lyric = 'no lyric'
     await getLyric(this.mid).then(res => {
       if (res.retcode === ERR_OK) {
         this.lyric = Base64.decode(res.lyric)
-      } else {
-        this.lyric = 'no lyric'
       }
     })
   }
