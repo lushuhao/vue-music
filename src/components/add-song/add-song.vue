@@ -44,8 +44,14 @@
         <suggest :query="query"
                  :showSinger="false"
                  @listScroll="blurInput"
-                 @select="saveSearch"></suggest>
+                 @select="selectSuggest"></suggest>
       </div>
+      <top-tip ref="topTip">
+        <div class="tip-title">
+          <i class="icon-ok"></i>
+          <span class="text">《{{topTipTitle}}》已添加到播放队列</span>
+        </div>
+      </top-tip>
     </div>
   </transition>
 </template>
@@ -58,6 +64,7 @@
   import SongList from 'base/song-list/song-list'
   import Suggest from 'components/suggest/suggest'
   import NoResult from 'base/no-result/no-result'
+  import TopTip from 'base/top-tip/top-tip'
   import {mapState, mapActions} from 'vuex'
   import {searchMixin} from 'common/js/mixin'
 
@@ -71,7 +78,8 @@
           {name: '最近播放'},
           {name: '搜索历史'}
         ],
-        noResult: '暂无搜索历史记录'
+        noResult: '暂无搜索历史记录',
+        topTipTitle: ''
       }
     },
     computed: {
@@ -96,10 +104,24 @@
           this.$refs[scroll].refresh()
         })
       },
+      selectSuggest(song) {
+        this.saveSearch()
+        this.showTip(song)
+        this.addSongToList(song)
+      },
       selectSong(song, index) {
         if (index !== 0) {
+          this.addSongToList(song)
+          this.showTip(song)
           this.insertSong(song)
         }
+      },
+      addSongToList(song) {
+        this.$emit('addSongToList', song)
+      },
+      showTip(song) {
+        this.topTipTitle = song.name
+        this.$refs.topTip.show()
       }
     },
     components: {
@@ -109,7 +131,8 @@
       Scroll,
       SongList,
       Suggest,
-      NoResult
+      NoResult,
+      TopTip
     }
   }
 </script>
@@ -181,7 +204,7 @@
           }
         }
 
-        .no-result-wrapper{
+        .no-result-wrapper {
           position: absolute
           top: 40%
           width: 100%
@@ -196,6 +219,23 @@
       bottom: 0
       left: 0
       right: 0
+    }
+
+    .tip-title{
+      text-align: center
+      padding: 18px 0
+      font-size: 0
+
+      .icon-ok{
+        font-size: $font-size-medium
+        color: $color-theme
+        margin-right: 4px
+      }
+
+      .text{
+        font-size: $font-size-medium
+        color: $color-text
+      }
     }
   }
 </style>
