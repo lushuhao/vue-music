@@ -1,5 +1,5 @@
 import {playMode} from 'common/js/config'
-import {getInitSearch, loadPlay} from 'common/js/cache'
+import {getInitSearch, loadPlay, loadFavorite} from 'common/js/cache'
 
 const initPlayList = loadPlay()
 
@@ -26,6 +26,7 @@ const state = {
   topList: {}, // 排行榜详情页
   searchHistory: getInitSearch(), // 搜索历史
   playHistory: initPlayList, // 播放历史
+  favoriteList: loadFavorite(), // 收藏列表
 }
 
 export default state

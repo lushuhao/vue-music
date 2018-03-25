@@ -6,6 +6,9 @@ const PLAY_MAX_LENGTH = 200
 
 const DATE_KEY = '__date__'
 
+const FAVORITE_KEY = '__favorite__'
+const FAVORITE_MAX_LENGTH = 200
+
 export function saveSearch(query) {
   let searches = store.get(SEARCH_KEY, [])
   insertArray(searches, query, (item) => {
@@ -57,10 +60,32 @@ export function loadPlay() {
 export function deletePlay(song) {
   let songs = store.get(PLAY_KEY, [])
   deleteFromArray(songs, (item) => {
-    return item === song
+    return item.id === song.id
   })
   store.set(PLAY_KEY, songs)
   return songs
+}
+
+export function saveFavorite(song) {
+  let songs = store.get(FAVORITE_KEY, [])
+  insertArray(songs, song, (item) => {
+    return item.id === song.id
+  }, FAVORITE_MAX_LENGTH)
+  store.set(FAVORITE_KEY, songs)
+  return songs
+}
+
+export function deleteFavorite(song) {
+  let songs = store.get(FAVORITE_KEY, [])
+  deleteFromArray(songs, (item) => {
+    return item.id === song.id
+  })
+  store.set(FAVORITE_KEY, songs)
+  return songs
+}
+
+export function loadFavorite() {
+  return store.get(FAVORITE_KEY)
 }
 
 function isCacheExpiration() {
