@@ -1,7 +1,8 @@
 import * as types from './mutation-types'
 import {playMode} from 'common/js/config'
-import {shuffle} from 'common/js/util'
+import {shuffle, isCacheExpiration} from 'common/js/util'
 import {saveSearch, deleteSearch, clearSearch, savePlay, saveFavorite, deleteFavorite} from 'common/js/cache'
+import Song from 'common/js/song'
 
 function findIndex(list, song) {
   return list.findIndex(item => {
@@ -27,12 +28,19 @@ export const selectPlay = ({commit, state}, {list, index}) => { // 两个参数c
 export const setCurrentSong = async ({commit, state}) => {
   let playList = state.playList
   let currentSong = playList[state.currentIndex]
+  const cacheExpiration = isCacheExpiration(currentSong.catchDate)
 
   commit(types.SET_CURRENT_SONG, currentSong)
 
-  if (!currentSong.url) { // 如果当前歌曲没有url，获取URL并保存到playList
-    await currentSong.getSongUrl()
-    await currentSong.getLyric() // 没有歌词, 获取并保存
+  if (!currentSong.url || cacheExpiration) { // 如果当前歌曲没有url，获取URL并保存到playList
+    currentSong = new Song(currentSong) // 保存到缓存中只有类的属性，需要重新获取类的方法
+    if (cacheExpiration) { // 歌曲地址会过期
+      await currentSong.getSongUrl()
+      await currentSong.setCatchDate()
+    }
+    if (!currentSong.lyric) {
+      await currentSong.getLyric() // 没有歌词, 获取并保存
+    }
     currentSong = Object.assign({}, currentSong)
     playList[state.currentIndex] = currentSong
 

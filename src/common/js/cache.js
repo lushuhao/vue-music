@@ -4,8 +4,6 @@ const SEARCH_MAX_LENGTH = 15
 const PLAY_KEY = '__play__'
 const PLAY_MAX_LENGTH = 200
 
-const DATE_KEY = '__date__'
-
 const FAVORITE_KEY = '__favorite__'
 const FAVORITE_MAX_LENGTH = 200
 
@@ -37,10 +35,6 @@ export function getInitSearch() {
 }
 
 export function savePlay(song) {
-  if (isCacheExpiration()) {
-    store.remove(PLAY_KEY)
-    store.remove(DATE_KEY)
-  }
   let songs = store.get(PLAY_KEY, [])
   insertArray(songs, song, (item) => {
     return item.id === song.id
@@ -50,10 +44,6 @@ export function savePlay(song) {
 }
 
 export function loadPlay() {
-  if (isCacheExpiration()) {
-    store.remove(PLAY_KEY)
-    store.remove(DATE_KEY)
-  }
   return store.get(PLAY_KEY, [])
 }
 
@@ -86,16 +76,6 @@ export function deleteFavorite(song) {
 
 export function loadFavorite() {
   return store.get(FAVORITE_KEY)
-}
-
-function isCacheExpiration() {
-  const cacheDate = store.get(DATE_KEY, '')
-  const currentDate = new Date().toLocaleDateString()
-  if (!cacheDate) { // 当前没有缓存日期，设置成本地日期
-    store.set(DATE_KEY, currentDate)
-    return false
-  }
-  return cacheDate !== currentDate
 }
 
 function insertArray(arr, val, compare, maxLen) {

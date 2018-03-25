@@ -4,7 +4,7 @@ import {Toast} from 'mint-ui'
 import {Base64} from 'js-base64'
 
 export default class Song {
-  constructor({id, mid, singer, name, album, duration, image}) {
+  constructor({id, mid, singer, name, album, duration, image, lyric}) {
     this.id = id
     this.mid = mid
     this.singer = singer
@@ -12,6 +12,7 @@ export default class Song {
     this.album = album
     this.duration = duration
     this.image = image
+    this.lyric = lyric
   }
 
   async getSongUrl() {
@@ -30,6 +31,10 @@ export default class Song {
         this.lyric = Base64.decode(res.lyric)
       }
     })
+  }
+
+  setCatchDate() {
+    this.catchDate = new Date().toLocaleDateString()
   }
 }
 

@@ -31,3 +31,11 @@ export function debounce(func, delay) {
     }, delay)
   }
 }
+
+export function isCacheExpiration(cacheDate) {
+  const currentDate = new Date().toLocaleDateString()
+  if (!cacheDate) { // 当前没有缓存日期，提示设置成本地日期
+    return true
+  }
+  return cacheDate !== currentDate
+}
