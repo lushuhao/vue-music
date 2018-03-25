@@ -13,7 +13,7 @@
       <div class="shortcut" v-show="!query">
         <switches :switches="switches"
                  :currentIndex="currentIndex"
-                 @selectItem="tabChange">
+                 @selectItem="switchesItem">
         </switches>
         <div class="list-wrapper">
           <scroll ref="songList"
@@ -94,7 +94,7 @@
       hide() {
         this.showFlag = false
       },
-      tabChange(index) {
+      switchesItem(index) {
         this.currentIndex = index
         this.initScroll()
       },

@@ -6,21 +6,45 @@
       </div>
       <div class="tab-wrapper">
         <switches :switches="switches"
-                 :currentIndex="currentIndex"
-                 @selectItem="switchesItem"
+                  :currentIndex="currentIndex"
+                  @selectItem="switchesItem"
         ></switches>
       </div>
       <div ref="playBtn" class="play-btn">
         <i class="icon-play"></i>
         <span class="text">随机播放全部</span>
       </div>
-      <div ref="listWrapper" class="list-wrapper"></div>
+      <div ref="listWrapper" class="list-wrapper">
+        <scroll ref="favoriteList"
+                v-show="currentIndex === 0"
+                :data="favoriteList"
+                class="list-scroll">
+          <div class="list-inner">
+            <song-list :songs="favoriteList" @select="selectSong"></song-list>
+          </div>
+        </scroll>
+        <scroll ref="songList"
+                v-show="currentIndex === 1 "
+                :data="playHistory"
+                class="list-scroll">
+          <div class="list-inner">
+            <song-list :songs="playHistory" @select="selectSong"></song-list>
+          </div>
+          <div v-if="playHistory && !playHistory.length" class="no-result-wrapper">
+            <no-result :title="noResult"></no-result>
+          </div>
+        </scroll>
+      </div>
     </div>
   </transition>
 </template>
 
 <script type="text/ecmascript-6">
   import Switches from 'base/switches/switches'
+  import Scroll from 'base/scroll/scroll'
+  import SongList from 'base/song-list/song-list'
+  import NoResult from 'base/no-result/no-result'
+  import {mapState, mapActions} from 'vuex'
 
   export default {
     data() {
@@ -36,13 +60,30 @@
         currentIndex: 0
       }
     },
+    computed: {
+      ...mapState(['favoriteList', 'playHistory'])
+    },
     methods: {
+      ...mapActions(['insertSong']),
       switchesItem(index) {
         this.currentIndex = index
+        this.initScroll()
+      },
+      initScroll() {
+        this.$nextTick(() => {
+          const scroll = this.currentIndex === 0 ? 'favoriteList' : 'songList'
+          this.$refs[scroll].refresh()
+        })
+      },
+      selectSong(song) {
+        this.insertSong(song)
       }
     },
     components: {
-      Switches
+      Switches,
+      Scroll,
+      SongList,
+      NoResult
     }
   }
 </script>
@@ -78,11 +119,11 @@
       }
     }
 
-    .tab-wrapper{
+    .tab-wrapper {
       margin: 10px 0 30px
     }
 
-    .play-btn{
+    .play-btn {
       box-sizing: border-box
       width: 135px
       padding: 7px 0
@@ -93,37 +134,37 @@
       border-radius: 100px
       font-size: 0
 
-      .icon-play{
+      .icon-play {
         display: inline-block
         vertical-align: middle
         margin-right: 6px
         font-size: $font-size-medium-x
       }
 
-      .text{
+      .text {
         display: inline-block
         vertical-align: middle
         font-size: $font-size-small
       }
     }
 
-    .list-wrapper{
+    .list-wrapper {
       position: absolute
       top: 110px
       bottom: 0
       width: 100%
 
-      .list-scroll{
+      .list-scroll {
         height: 100%
         overflow: hidden
 
-        .list-inner{
+        .list-inner {
           padding: 20px 30px
         }
       }
     }
 
-    .no-result-wrapper{
+    .no-result-wrapper {
       position: absolute
       width: 100%
       top: 50%
