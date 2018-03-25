@@ -28,7 +28,7 @@ export const playListMixin = {
       throw new Error('component must implement handlePlayList method')
     },
     changeScrollList(playList, list, scroll) {
-      list.style.bottom = playList.length > 0 ? this.playBottom : ''
+      list.style.bottom = playList.length > 0 ? this.playBottom : 0
       scroll.refresh()
     },
   }
