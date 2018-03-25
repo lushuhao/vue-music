@@ -17,6 +17,8 @@ const TopList = () => import(/* webpackChunkName: "group-top-list" */ 'component
 
 const Search = () => import(/* webpackChunkName: "group-search" */ 'components/search/search')
 
+const UserCenter = () => import(/* webpackChunkName: "group-user" */ 'components/user-center/user-center')
+
 export default new Router({
   mode: 'history',
   routes: [
@@ -60,5 +62,9 @@ export default new Router({
         component: SingerDetail
       }]
     },
+    {
+      path: '/user',
+      component: UserCenter
+    }
   ]
 })

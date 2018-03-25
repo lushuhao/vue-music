@@ -11,10 +11,10 @@
         <search-box ref="searchBox" placeholder="搜索歌曲" @query="onQueryChange"></search-box>
       </div>
       <div class="shortcut" v-show="!query">
-        <tab-bar :tabs="tabs"
+        <switches :switches="switches"
                  :currentIndex="currentIndex"
                  @selectItem="tabChange">
-        </tab-bar>
+        </switches>
         <div class="list-wrapper">
           <scroll ref="songList"
                   v-show="currentIndex === 0"
@@ -57,7 +57,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import TabBar from 'base/tab-bar/tab-bar'
+  import Switches from 'base/switches/switches'
   import SearchBox from 'base/search-box/search-box'
   import SearchList from 'base/search-list/search-list'
   import Scroll from 'base/scroll/scroll'
@@ -74,7 +74,7 @@
       return {
         showFlag: false,
         currentIndex: 0,
-        tabs: [
+        switches: [
           {name: '最近播放'},
           {name: '搜索历史'}
         ],
@@ -125,7 +125,7 @@
       }
     },
     components: {
-      TabBar,
+      Switches,
       SearchBox,
       SearchList,
       Scroll,

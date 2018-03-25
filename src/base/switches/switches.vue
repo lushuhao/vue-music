@@ -1,7 +1,7 @@
 <template>
-  <ul class="tab-bar">
-    <li class="tab-item"
-        v-for="(item, index) in tabs"
+  <ul class="switches">
+    <li class="switch-item"
+        v-for="(item, index) in switches"
         :key="index"
         :class="{'active': currentIndex === index}"
         @click="selectItem(index)">
@@ -13,7 +13,7 @@
 <script type="text/ecmascript-6">
   export default {
     props: {
-      tabs: {
+      switches: {
         type: Array,
         default: []
       },
@@ -33,7 +33,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
 
-  .tab-bar {
+  .switches {
     display: flex
     align-items: center
     width: 240px
@@ -42,7 +42,7 @@
     border-radius: 5px
     overflow: hidden
 
-    .tab-item {
+    .switch-item {
       flex: 1
       padding: 8px
       text-align: center
