@@ -75,7 +75,7 @@ export function deleteFavorite(song) {
 }
 
 export function loadFavorite() {
-  return store.get(FAVORITE_KEY)
+  return store.get(FAVORITE_KEY, [])
 }
 
 function insertArray(arr, val, compare, maxLen) {

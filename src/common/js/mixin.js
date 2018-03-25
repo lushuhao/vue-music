@@ -36,7 +36,7 @@ export const playListMixin = {
 
 export const playerMixin = {
   computed: {
-    ...mapState(['sequenceList', 'currentSong', 'playMode', 'playList']),
+    ...mapState(['sequenceList', 'currentSong', 'playMode', 'playList', 'favoriteList']),
     iconMode() {
       let mode
       switch (this.playMode) {
@@ -60,7 +60,9 @@ export const playerMixin = {
       setPlayList: types.SET_PLAY_LIST,
     }),
     ...mapActions([
-      'setCurrentSong'
+      'setCurrentSong',
+      'saveFavoriteList',
+      'deleteFavoriteList'
     ]),
     changeMode() {
       const mode = (this.playMode + 1) % 3 // 获取下一种模式
@@ -85,6 +87,26 @@ export const playerMixin = {
       })
       this.setCurrentIndex(index)
     },
+    getFavoriteIcon(song) {
+      if (this.isFavorite(song)) {
+        return 'icon-favorite'
+      } else {
+        return 'icon-not-favorite'
+      }
+    },
+    toggleFavorite(song) {
+      if (this.isFavorite(song)) {
+        this.deleteFavoriteList(song)
+      } else {
+        this.saveFavoriteList(song)
+      }
+    },
+    isFavorite(song) {
+      const index = this.favoriteList.findIndex(item => {
+        return item.id === song.id
+      })
+      return index > -1
+    }
   }
 }
 

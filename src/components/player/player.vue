@@ -62,7 +62,7 @@
             <div class="icon i-center" :class="disableCls"><i @click="togglePlaying"
                                                               :class="playIcon"></i></div>
             <div class="icon" :class="disableCls"><i @click="next" class="icon-next"></i></div>
-            <div class="icon"><i class="icon-not-favorite"></i></div>
+            <div class="icon"><i @click="toggleFavorite(currentSong)" :class="getFavoriteIcon(currentSong)"></i></div>
           </div>
         </div>
       </div>
