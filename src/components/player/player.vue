@@ -169,8 +169,8 @@
           this.currentLyric.stop()
         }
         this.playingLyric = '' // 切换歌曲先清空歌词
-        this.setLyric()
         this.$nextTick(() => {
+          this.setLyric()
           this.$refs.audio.play()
         })
       },
@@ -309,6 +309,7 @@
       loop() {
         this.$refs.audio.currentTime = 0
         this.$refs.audio.play()
+        this.setPlayingState(true)
         if (this.currentLyric) {
           this.currentLyric.seek(0)
         }

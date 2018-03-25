@@ -61,6 +61,10 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
 
+    // Various Prod Server settings
+    host: 'localhost', // can be overwritten by process.env.HOST
+    port: 9000, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+
     /**
      * Source Maps
      */
