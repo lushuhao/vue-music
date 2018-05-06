@@ -16,7 +16,7 @@ export const ERR_OK = 0 // 错误码为0，即成功code=0
 
 export const defaultConfig = {
   // 代理服务器地址
-  baseURL: 'https://nginx.lushuhao.club/music/',
+  baseURL: 'https://nginx.lushuhao.xyz/music/',
   // 现在，在超时前，所有请求都会等待 6 秒
   timeout: 6000,
 

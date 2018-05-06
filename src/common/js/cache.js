@@ -1,3 +1,5 @@
+import {isCacheExpiration} from 'common/js/util'
+
 const SEARCH_KEY = '__search__'
 const SEARCH_MAX_LENGTH = 15
 
@@ -44,7 +46,13 @@ export function savePlay(song) {
 }
 
 export function loadPlay() {
-  return store.get(PLAY_KEY, [])
+  const playList = store.get(PLAY_KEY, [])
+  return playList.map(item => {
+    if (isCacheExpiration(item.catchDate)) {
+      item.url = ''
+      return item
+    }
+  })
 }
 
 export function deletePlay(song) {

@@ -202,7 +202,7 @@
       this.lyricEl = this.$refs.lyricList.$el
     },
     methods: {
-      ...mapActions(['savePlayHistory']),
+      ...mapActions(['savePlayHistory', 'setCurrentSong']),
       ...mapMutations({
         setFullScreen: types.SET_FULL_SCREEN,
         setPlayingState: types.SET_PLAYING_STATE,
@@ -260,7 +260,11 @@
         if (this.currentSong.url && this.currentSong.url.code === 0) {
           return Toast(this.currentSong.url.msg)
         }
-        this.setPlayingState(!this.playing)
+        if (this.currentSong.url) {
+          this.setPlayingState(!this.playing)
+        } else {
+          this.setCurrentSong()
+        }
         if (this.currentLyric) {
           this.currentLyric.togglePlay()
         }
