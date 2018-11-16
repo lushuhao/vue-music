@@ -13,13 +13,13 @@
   import {getSingerList} from 'api/singer'
   import {ERR_OK} from 'api/config'
   import {mapMutations} from 'vuex'
-  import {playListMixin} from 'common/js/mixin'
+  import {playListMixin, prRenderMixin} from 'common/js/mixin'
 
   const HOT_TITLE = '热门'
   const HOT_SINGER_LEN = 10
 
   export default {
-    mixins: [playListMixin],
+    mixins: [playListMixin, prRenderMixin],
     data() {
       return {
         singers: []

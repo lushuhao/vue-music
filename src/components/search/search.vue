@@ -41,10 +41,10 @@
   import Confirm from 'base/confirm/confirm'
   import Scroll from 'base/scroll/scroll'
   import Suggest from 'components/suggest/suggest'
-  import {playListMixin, searchMixin} from 'common/js/mixin'
+  import {playListMixin, searchMixin, prRenderMixin} from 'common/js/mixin'
 
   export default {
-    mixins: [playListMixin, searchMixin],
+    mixins: [playListMixin, searchMixin, prRenderMixin],
     data() {
       return {
         hotKey: [],

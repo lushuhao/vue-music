@@ -47,10 +47,10 @@
   import SongList from 'base/song-list/song-list'
   import NoResult from 'base/no-result/no-result'
   import {mapState, mapActions} from 'vuex'
-  import {playListMixin} from 'common/js/mixin'
+  import {playListMixin, prRenderMixin} from 'common/js/mixin'
 
   export default {
-    mixins: [playListMixin],
+    mixins: [playListMixin, prRenderMixin],
     data() {
       return {
         switches: [

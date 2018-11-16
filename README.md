@@ -8,6 +8,9 @@
 # install dependencies
 npm install
 
+# 常用类库提前编译
+npm run dll
+
 # serve with hot reload at localhost:8080
 npm run start
 

@@ -2,8 +2,8 @@
   <div class="recommend" ref="recommend">
     <scroll ref="scroll" :data="discList" class="recommend-content">
       <div>
-        <div v-if="slider.length" class="slider-wrapper">
-          <slider>
+        <div class="slider-wrapper">
+          <slider v-if="slider.length">
             <div v-for="item in slider" :key="item.id">
               <a :href="item.linkUrl">
                 <img @load="loadImage" :src="item.picUrl"/>
@@ -34,12 +34,12 @@
   import Slider from 'base/slider/slider'
   import {getRecommend, getDiscList} from 'api/recommend'
   import {ERR_OK} from 'api/config'
-  import {playListMixin} from 'common/js/mixin'
+  import {playListMixin, prRenderMixin} from 'common/js/mixin'
   import {mapMutations} from 'vuex'
   import {SET_DISC} from 'store/mutation-types'
 
   export default {
-    mixins: [playListMixin],
+    mixins: [playListMixin, prRenderMixin],
     data() {
       return {
         slider: [],   // 轮播图列表
@@ -110,6 +110,7 @@
       .slider-wrapper {
         position: relative
         width: 100%
+        min-height: 150px;
         overflow: hidden
       }
       .recommend-list {

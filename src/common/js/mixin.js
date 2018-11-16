@@ -135,3 +135,13 @@ export const searchMixin = {
     },
   }
 }
+
+/**
+ * 预渲染
+ * @type {{mounted: (function())}}
+ */
+export const prRenderMixin = {
+  mounted() {
+    document.dispatchEvent(new Event('sketelon-render-event'))
+  }
+}

@@ -67,6 +67,8 @@
     }
 
     .mine{
+      width: 20px;
+      height: 20px;
       extend-click()
       .icon-mine{
         font-size 20px
@@ -75,6 +77,8 @@
     }
 
     .music {
+      width: 20px;
+      height: 20px;
       extend-click()
       .icon-music{
         font-size 20px

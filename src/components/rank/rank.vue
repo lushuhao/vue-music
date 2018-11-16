@@ -27,12 +27,12 @@
   import {ERR_OK} from 'api/config'
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
-  import {playListMixin} from 'common/js/mixin'
+  import {playListMixin, prRenderMixin} from 'common/js/mixin'
   import {mapMutations} from 'vuex'
   import {SET_TOP_LIST} from 'store/mutation-types'
 
   export default {
-    mixins: [playListMixin],
+    mixins: [playListMixin, prRenderMixin],
     data() {
       return {
         topList: []
